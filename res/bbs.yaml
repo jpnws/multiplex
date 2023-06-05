@@ -1,0 +1,523 @@
+openapi: 3.0.3
+info:
+  title: Bulletin Board System API
+  version: 1.0.0
+  description: API documentation for the Bulletin Board System
+
+servers:
+  - url: http://api.example.com/bbs
+
+paths:
+  /threads:
+    get:
+      summary: Retrieve all threads
+      operationId: getAllThreads
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Thread'
+
+    post:
+      summary: Create a new thread
+      operationId: createThread
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewThread'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+
+  /threads/{threadId}:
+    get:
+      summary: Retrieve a specific thread
+      operationId: getThreadById
+      parameters:
+        - name: threadId
+          in: path
+          description: ID of the thread to retrieve
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Thread'
+        '404':
+          description: Not Found
+
+    put:
+      summary: Update a specific thread
+      operationId: updateThreadById
+      parameters:
+        - name: threadId
+          in: path
+          description: ID of the thread to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateThread'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+
+    delete:
+      summary: Delete a specific thread
+      operationId: deleteThreadById
+      parameters:
+        - name: threadId
+          in: path
+          description: ID of the thread to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+
+  /posts:
+    get:
+      summary: Retrieve all posts
+      operationId: getAllPosts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+
+    post:
+      summary: Create a new post
+      operationId: createPost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPost'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+
+  /posts/{postId}:
+    get:
+      summary: Retrieve a specific post
+      operationId: getPostById
+      parameters:
+        - name: postId
+          in: path
+          description: ID of the post to retrieve
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: Not Found
+
+    put:
+      summary: Update a specific post
+      operationId: updatePostById
+      parameters:
+        - name: postId
+          in: path
+          description: ID of the post to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePost'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+
+    delete:
+      summary: Delete a specific post
+      operationId: deletePostById
+      parameters:
+        - name: postId
+          in: path
+          description: ID of the post to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+
+  /comments:
+    get:
+      summary: Retrieve all comments
+      operationId: getAllComments
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+
+    post:
+      summary: Create a new comment
+      operationId: createComment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewComment'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+
+  /comments/{commentId}:
+    get:
+      summary: Retrieve a specific comment
+      operationId: getCommentById
+      parameters:
+        - name: commentId
+          in: path
+          description: ID of the comment to retrieve
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '404':
+          description: Not Found
+
+    put:
+      summary: Update a specific comment
+      operationId: updateCommentById
+      parameters:
+        - name: commentId
+          in: path
+          description: ID of the comment to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateComment'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+
+    delete:
+      summary: Delete a specific comment
+      operationId: deleteCommentById
+      parameters:
+        - name: commentId
+          in: path
+          description: ID of the comment to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+
+  /replies:
+    get:
+      summary: Retrieve all replies
+      operationId: getAllReplies
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reply'
+
+    post:
+      summary: Create a new reply
+      operationId: createReply
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewReply'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+
+  /replies/{replyId}:
+    get:
+      summary: Retrieve a specific reply
+      operationId: getReplyById
+      parameters:
+        - name: replyId
+          in: path
+          description: ID of the reply to retrieve
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reply'
+        '404':
+          description: Not Found
+
+    put:
+      summary: Update a specific reply
+      operationId: updateReplyById
+      parameters:
+        - name: replyId
+          in: path
+          description: ID of the reply to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateReply'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+
+    delete:
+      summary: Delete a specific reply
+      operationId: deleteReplyById
+      parameters:
+        - name: replyId
+          in: path
+          description: ID of the reply to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+
+components:
+  schemas:
+    Thread:
+      type: object
+      properties:
+        threadId:
+          type: integer
+        title:
+          type: string
+        userId:
+          type: integer
+        creationDate:
+          type: string
+          format: date-time
+        modifiedDate:
+          type: string
+          format: date-time
+        userIp:
+          type: string
+
+    Post:
+      type: object
+      properties:
+        postId:
+          type: integer
+        threadId:
+          type: integer
+        userId:
+          type: integer
+        postContent:
+          type: string
+        postDate:
+          type: string
+          format: date-time
+        modifiedDate:
+          type: string
+          format: date-time
+        userIp:
+          type: string
+
+    Comment:
+      type: object
+      properties:
+        commentId:
+          type: integer
+        postId:
+          type: integer
+        userId:
+          type: integer
+        commentContent:
+          type: string
+        commentDate:
+          type: string
+          format: date-time
+        modifiedDate:
+          type: string
+          format: date-time
+        userIp:
+          type: string
+
+    Reply:
+      type: object
+      properties:
+        replyId:
+          type: integer
+        commentId:
+          type: integer
+        parentReplyId:
+          type: integer
+        userId:
+          type: integer
+        replyContent:
+          type: string
+        replyDate:
+          type: string
+          format: date-time
+        modifiedDate:
+          type: string
+          format: date-time
+        userIp:
+          type: string
+
+    NewThread:
+      type: object
+      properties:
+        title:
+          type: string
+        userId:
+          type: integer
+        userIp:
+          type: string
+
+    NewPost:
+      type: object
+      properties:
+        threadId:
+          type: integer
+        userId:
+          type: integer
+        postContent:
+          type: string
+        userIp:
+          type: string
+
+    NewComment:
+      type: object
+      properties:
+        postId:
+          type: integer
+        userId:
+          type: integer
+        commentContent:
+          type: string
+        userIp:
+          type: string
+
+    NewReply:
+      type: object
+      properties:
+        commentId:
+          type: integer
+        parentReplyId:
+          type: integer
+        userId:
+          type: integer
+        replyContent:
+          type: string
+        userIp:
+          type: string
+
+    UpdateThread:
+      type: object
+      properties:
+        title:
+          type: string
+
+    UpdatePost:
+      type: object
+      properties:
+        postContent:
+          type: string
+
+    UpdateComment:
+      type: object
+      properties:
+        commentContent:
+          type: string
+
+    UpdateReply:
+      type: object
+      properties:
+        replyContent:
+          type: string
