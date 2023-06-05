@@ -1,3 +1,3 @@
 # TODO
 
-* Add diesel and integrate MySQL.
+* Add diesel and integrate PostgreSQL.
