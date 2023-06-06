@@ -1,4 +1,4 @@
-use crate::models::Thread;
+use crate::models::Board;
 use axum::extract::Path;
 use axum::response::Json;
 use diesel::pg::PgConnection;
@@ -10,11 +10,11 @@ use std::env;
 pub mod models;
 pub mod schema;
 
-pub async fn get_thread_by_id(Path(thread_id): Path<i32>) -> Json<Value> {
-    use self::schema::threads::dsl::threads;
+pub async fn get_board_by_id(Path(id): Path<i32>) -> Json<Value> {
+    use self::schema::boards::dsl::boards;
 
     let conn = &mut establish_connection();
-    let result = threads.find(thread_id).first::<Thread>(conn);
+    let result = boards.find(id).first::<Board>(conn);
 
     match result {
         Ok(thread) => Json(json!({
@@ -32,7 +32,7 @@ pub async fn get_thread_by_id(Path(thread_id): Path<i32>) -> Json<Value> {
 pub fn establish_connection() -> PgConnection {
     dotenv().ok();
 
-    let database_url = env::var("DATABASE_URL_BBS").expect("DATABASE_URL must be set.");
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set.");
     PgConnection::establish(&database_url)
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
