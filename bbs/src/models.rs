@@ -1,3 +1,4 @@
+use crate::schema::*;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -52,4 +53,48 @@ pub struct Reply {
     reply_date: NaiveDateTime,
     modified_date: NaiveDateTime,
     user_ip: String,
+}
+
+#[derive(Insertable)]
+#[diesel(table_name = threads)]
+pub struct NewThread<'a> {
+    pub title: &'a str,
+    pub user_id: i32,
+    pub creation_date: NaiveDateTime,
+    pub modified_date: NaiveDateTime,
+    pub user_ip: &'a str,
+}
+
+#[derive(Insertable)]
+#[diesel(table_name = posts)]
+pub struct NewPost<'a> {
+    pub thread_id: i32,
+    pub user_id: i32,
+    pub post_content: &'a str,
+    pub post_date: NaiveDateTime,
+    pub modified_date: NaiveDateTime,
+    pub user_ip: &'a str,
+}
+
+#[derive(Insertable)]
+#[diesel(table_name = comments)]
+pub struct NewComment<'a> {
+    pub post_id: i32,
+    pub user_id: i32,
+    pub comment_content: &'a str,
+    pub comment_date: NaiveDateTime,
+    pub modified_date: NaiveDateTime,
+    pub user_ip: &'a str,
+}
+
+#[derive(Insertable)]
+#[diesel(table_name = replies)]
+pub struct NewReply<'a> {
+    pub comment_id: i32,
+    pub parent_reply_id: Option<i32>,
+    pub user_id: i32,
+    pub reply_content: &'a str,
+    pub reply_date: NaiveDateTime,
+    pub modified_date: NaiveDateTime,
+    pub user_ip: &'a str,
 }
