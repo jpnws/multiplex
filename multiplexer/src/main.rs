@@ -1,11 +1,13 @@
-use axum::{routing::get, Router};
+use actix_web::{middleware, App, HttpServer};
 
-#[tokio::main]
-async fn main() {
-    let app = Router::new().route("/boards/:id", get(bbs::get_board_by_id));
-
-    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| {
+        App::new()
+            .wrap(middleware::Compress::default())
+            .service(bbs::get_board_by_id)
+    })
+    .bind(("127.0.0.1", 8080))?
+    .run()
+    .await
 }

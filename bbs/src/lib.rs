@@ -1,32 +1,33 @@
 use crate::models::Board;
-use axum::extract::Path;
-use axum::response::Json;
+use actix_web::{get, web, Responder};
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
-use serde_json::{json, Value};
+use serde_json::json;
 use std::env;
 
 pub mod models;
 pub mod schema;
 
-pub async fn get_board_by_id(Path(id): Path<i32>) -> Json<Value> {
+#[get("/boards/{id}")]
+pub async fn get_board_by_id(path: web::Path<i32>) -> impl Responder {
+    let id = path.into_inner();
     use self::schema::boards::dsl::boards;
     let conn = &mut establish_connection();
     let result = boards.find(id).first::<Board>(conn);
     match result {
-        Ok(thread) => Json(json!({
-            "thread": thread,
+        Ok(board) => web::Json(json!({
+            "board": board,
         })),
-        Err(diesel::NotFound) => Json(json!({
-            "error": "Thread not found",
+        Err(diesel::NotFound) => web::Json(json!({
+            "error": "Board not found",
         })),
-        Err(err) => Json(json!({
+        Err(err) => web::Json(json!({
             "error": format!("Database error: {}", err),
         })),
     }
 }
 
-pub fn establish_connection() -> PgConnection {
+fn establish_connection() -> PgConnection {
     load_env();
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set.");
     PgConnection::establish(&database_url)
