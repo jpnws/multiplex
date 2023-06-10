@@ -4,17 +4,17 @@
 // - The health check always returns a 200 OK HTTP status code.
 // - The health check always returns an empty body.
 #[tokio::test]
-async fn check_api_health() {
+async fn test_check_health() {
     // ====================================
     // Arrange
     // ====================================
-    let socket_addr = common::spawn_app();
+    let socket_addr = multiplexer::spawn_app();
     let client = reqwest::Client::new();
     // ====================================
     // Act
     // ====================================
     let response = client
-        .get(&format!("http://{}/health_check", &socket_addr))
+        .get(&format!("http://{}/check_health", &socket_addr))
         .send()
         .await
         .expect("Failed to execute request.");

@@ -1,11 +1,11 @@
 use rstest::*;
 
 #[tokio::test]
-async fn subscribe_returns_a_200_for_valid_form_data() {
+async fn subscribe_returns_200_for_valid_form_data() {
     // ====================================
     // Arrange
     // ====================================
-    let socket_addr = common::spawn_app();
+    let socket_addr = multiplexer::spawn_app();
     let client = reqwest::Client::new();
     // ====================================
     // Act
@@ -21,7 +21,7 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
     // ====================================
     // Assert
     // ====================================
-    assert_eq!(200, response.status().as_u16());
+    assert_eq!(200, response.status().as_u16(), "{}", socket_addr);
 }
 
 // Table-driven test. Parametrized test. Using rstest crate.
@@ -30,14 +30,14 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
 #[case("email=ursula_le_guin%40gmail.com", "missing the name")]
 #[case("", "missing both name and email")]
 #[tokio::test]
-async fn subscribe_returns_a_400_when_data_is_missing(
+async fn subscribe_returns_400_when_data_is_missing(
     #[case] invalid_body: String,
     #[case] error_message: String,
 ) {
     // ====================================
     // Arrange
     // ====================================
-    let socket_addr = common::spawn_app();
+    let socket_addr = multiplexer::spawn_app();
     let client = reqwest::Client::new();
     // ====================================
     // Act

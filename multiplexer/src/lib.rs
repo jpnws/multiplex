@@ -1,5 +1,4 @@
-use actix_web::dev::Server;
-use actix_web::{middleware, web, App, HttpResponse, HttpServer};
+use actix_web::{dev::Server, get, middleware, App, HttpResponse, HttpServer};
 use std::net::{Ipv4Addr, SocketAddrV4, TcpListener};
 
 pub fn spawn_app() -> SocketAddrV4 {
@@ -16,7 +15,8 @@ pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
     let server = HttpServer::new(|| {
         App::new()
             .wrap(middleware::Compress::default())
-            .route("/health_check", web::get().to(health_check))
+            .service(check_health)
+            .service(newsletter::subscribe)
             .service(bbs::get_board_by_id)
     })
     .listen(listener)?
@@ -24,6 +24,7 @@ pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
     Ok(server)
 }
 
-async fn health_check() -> HttpResponse {
+#[get("/check_health")]
+async fn check_health() -> HttpResponse {
     HttpResponse::Ok().finish()
 }

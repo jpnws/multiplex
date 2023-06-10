@@ -4,12 +4,19 @@ version = "0.1.0"
 authors = ["Ji Park <ji@jipark.dev>"]
 edition = "2021"
 
+[lib]
+path = "src/lib.rs"
+
 [[bin]]
-path = "src/main.rs"
 name = "multiplexer"
+path = "src/main.rs"
 
 [dependencies]
 actix-web = "4"
-tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
-common = { path = "../common" }
 bbs = { path = "../bbs" }
+newsletter = { path = "../newsletter" }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+
+[dev-dependencies]
+reqwest = "0.11.18"
+rstest = "0.17.0"
