@@ -7,21 +7,22 @@ mod common;
 // - The health check always returns an empty body.
 #[tokio::test]
 async fn test_health_check() {
+    // ====================================
     // Arrange
-    common::spawn_app();
-    // We need to bring in `reqwest`
-
-    // to perform HTTP requests against our application.
+    // ====================================
+    let socket_addr = common::spawn_app();
     let client = reqwest::Client::new();
-
+    // ====================================
     // Act
+    // ====================================
     let response = client
-        .get("http://127.0.0.1:8000/health_check")
+        .get(&format!("http://{}/health_check", &socket_addr))
         .send()
         .await
         .expect("Failed to execute request.");
-
+    // ====================================
     // Assert
+    // ====================================
     assert!(response.status().is_success());
     assert_eq!(Some(0), response.content_length());
 }

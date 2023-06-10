@@ -1,5 +1,6 @@
 use actix_web::dev::Server;
 use actix_web::{middleware, web, App, HttpRequest, HttpResponse, HttpServer};
+use std::net::TcpListener;
 
 async fn greet(req: HttpRequest) -> HttpResponse {
     let name = req.match_info().get("name").unwrap_or("World");
@@ -10,7 +11,7 @@ async fn health_check() -> HttpResponse {
     HttpResponse::Ok().finish()
 }
 
-pub fn run() -> Result<Server, std::io::Error> {
+pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
     let server = HttpServer::new(|| {
         App::new()
             .wrap(middleware::Compress::default())
@@ -18,7 +19,7 @@ pub fn run() -> Result<Server, std::io::Error> {
             .route("/greeting/{name}", web::get().to(greet))
             .service(bbs::get_board_by_id)
     })
-    .bind(("127.0.0.1", 8000))?
+    .listen(listener)?
     .run();
     Ok(server)
 }
