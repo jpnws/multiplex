@@ -1,12 +1,10 @@
-mod common;
-
 // The test covers the full range of properties we are interested in.
 // - The health check is exposed at /health_check.
 // - The health check is behind a GET method.
 // - The health check always returns a 200 OK HTTP status code.
 // - The health check always returns an empty body.
 #[tokio::test]
-async fn test_health_check() {
+async fn check_api_health() {
     // ====================================
     // Arrange
     // ====================================
