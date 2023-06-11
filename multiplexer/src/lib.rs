@@ -1,3 +1,5 @@
+pub mod configuration;
+
 use actix_web::{dev::Server, get, middleware, App, HttpResponse, HttpServer};
 use std::net::{Ipv4Addr, SocketAddrV4, TcpListener};
 
