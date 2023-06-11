@@ -7,9 +7,9 @@ async fn subscribe_returns_200_for_valid_form_data() {
     // ====================================
     // Arrange
     // ====================================
-    let socket_addr = multiplexer::spawn_app();
+    let socket_addr = newsletter::spawn_app();
     let cfg = Settings::new().expect("Failed to read configuration.");
-    let db_connection = PgConnection::connect(&cfg.connection_string())
+    let mut db_connection = PgConnection::connect(&cfg.connection_string())
         .await
         .expect("Failed to connect to Postgres.");
     let client = reqwest::Client::new();
@@ -28,6 +28,14 @@ async fn subscribe_returns_200_for_valid_form_data() {
     // Assert
     // ====================================
     assert_eq!(200, response.status().as_u16(), "{}", socket_addr);
+
+    let saved = sqlx::query!("SELECT email, name FROM subscriptions")
+        .fetch_one(&mut db_connection)
+        .await
+        .expect("Failed to fetch saved subscription.");
+
+    assert_eq!(saved.email, "ursula_le_guin@gmail.com");
+    assert_eq!(saved.name, "le guin");
 }
 
 // Table-driven test. Parametrized test. Using rstest crate.
@@ -43,7 +51,7 @@ async fn subscribe_returns_400_when_data_is_missing(
     // ====================================
     // Arrange
     // ====================================
-    let socket_addr = multiplexer::spawn_app();
+    let socket_addr = newsletter::spawn_app();
     let cfg = Settings::new().expect("Failed to read configuration.");
     let db_connection = PgConnection::connect(&cfg.connection_string())
         .await
