@@ -1,4 +1,6 @@
+use newsletter::cfg::Settings;
 use rstest::*;
+use sqlx::{Connection, PgConnection};
 
 #[tokio::test]
 async fn subscribe_returns_200_for_valid_form_data() {
@@ -6,6 +8,10 @@ async fn subscribe_returns_200_for_valid_form_data() {
     // Arrange
     // ====================================
     let socket_addr = multiplexer::spawn_app();
+    let cfg = Settings::new().expect("Failed to read configuration.");
+    let db_connection = PgConnection::connect(&cfg.connection_string())
+        .await
+        .expect("Failed to connect to Postgres.");
     let client = reqwest::Client::new();
     // ====================================
     // Act
@@ -38,6 +44,10 @@ async fn subscribe_returns_400_when_data_is_missing(
     // Arrange
     // ====================================
     let socket_addr = multiplexer::spawn_app();
+    let cfg = Settings::new().expect("Failed to read configuration.");
+    let db_connection = PgConnection::connect(&cfg.connection_string())
+        .await
+        .expect("Failed to connect to Postgres.");
     let client = reqwest::Client::new();
     // ====================================
     // Act

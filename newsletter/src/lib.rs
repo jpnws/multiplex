@@ -1,6 +1,8 @@
 use actix_web::HttpResponse;
 use actix_web::{post, web};
 
+pub mod cfg;
+
 #[derive(serde::Deserialize)]
 pub struct FormData {
     email: String,

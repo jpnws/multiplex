@@ -1249,6 +1249,7 @@ dependencies = [
  "reqwest",
  "rstest",
  "serde",
+ "sqlx",
  "tokio",
 ]
 
@@ -1275,6 +1276,7 @@ name = "newsletter"
 version = "0.1.0"
 dependencies = [
  "actix-web",
+ "config",
  "serde",
  "sqlx",
  "tokio",

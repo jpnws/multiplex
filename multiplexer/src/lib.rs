@@ -1,7 +1,7 @@
-pub mod configuration;
-
 use actix_web::{dev::Server, get, middleware, App, HttpResponse, HttpServer};
 use std::net::{Ipv4Addr, SocketAddrV4, TcpListener};
+
+pub mod cfg;
 
 pub fn spawn_app() -> SocketAddrV4 {
     let ip_addr = Ipv4Addr::new(127, 0, 0, 1);
