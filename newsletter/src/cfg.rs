@@ -8,7 +8,7 @@ pub struct Settings {
 }
 
 #[derive(Deserialize)]
-pub struct Database {
+struct Database {
     username: String,
     password: String,
     host: String,
