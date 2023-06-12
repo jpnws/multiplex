@@ -9,7 +9,7 @@ pub struct Settings {
 
 #[derive(Deserialize)]
 struct Database {
-    username: String,
+    pub username: String,
     password: String,
     host: String,
     port: u16,
@@ -34,7 +34,7 @@ impl Settings {
             self.database.password,
             self.database.host,
             self.database.port,
-            self.database.name
+            self.database.name,
         )
     }
 }
