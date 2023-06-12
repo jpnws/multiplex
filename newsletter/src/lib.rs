@@ -18,7 +18,7 @@ pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
     // Create database.
     let mut connection = PgConnection::connect(&config.connection_string_without_db())
         .await
-        .expect("Failed to create dabase.");
+        .expect("Failed to create database.");
     connection
         .execute(&*format!(r#"CREATE DATABASE "{}";"#, &config.database.name))
         .await
@@ -77,7 +77,7 @@ pub struct FormData {
 pub async fn subscribe(form: web::Form<FormData>, db_pool: web::Data<PgPool>) -> HttpResponse {
     let request_id = Uuid::new_v4();
     log::info!(
-        "[REQ{}] Saving new subscriber: {} - {}",
+        "[REQ_ID {}] Saving new subscriber: {} - {}",
         request_id,
         form.email,
         form.name
@@ -97,7 +97,7 @@ pub async fn subscribe(form: web::Form<FormData>, db_pool: web::Data<PgPool>) ->
     {
         Ok(_) => {
             log::info!(
-                "[REQ{}] Saved subscriber {} - {}",
+                "[REQ_ID {}] Saved subscriber {} - {}",
                 request_id,
                 form.email,
                 form.name
@@ -105,7 +105,7 @@ pub async fn subscribe(form: web::Form<FormData>, db_pool: web::Data<PgPool>) ->
             HttpResponse::Ok().finish()
         }
         Err(e) => {
-            log::error!("[REQ{}] Failed to save subscriber: {:?}", request_id, e);
+            log::error!("[REQ_ID {}] Failed to save subscriber: {:?}", request_id, e);
             HttpResponse::InternalServerError().finish()
         }
     }
