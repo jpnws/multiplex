@@ -76,12 +76,26 @@ pub struct FormData {
 #[post("/subscriptions")]
 pub async fn subscribe(form: web::Form<FormData>, db_pool: web::Data<PgPool>) -> HttpResponse {
     let request_id = Uuid::new_v4();
-    log::info!(
-        "[REQ_ID {}] Saving new subscriber: {} - {}",
+    // Spans, like logs, have an associated level
+    // `info_span!` is equivalent to `info!` macro.
+    let request_span = tracing::info_span!(
+        "Adding a new subscriber",
+        %request_id,
+        subscriber_email = %form.email,
+        subscriber_name = %form.name
+    );
+    // Using `enter` in an async function is a recipe for disaster!
+    // Do not do this in production.
+    // See the following section on `Instrumenting Futures`.
+    let _request_span_guard = request_span.enter();
+
+    tracing::info!(
+        "[REQID={}] Saving new subscriber: {} - {}",
         request_id,
         form.email,
         form.name
     );
+
     match sqlx::query!(
         r#"
         INSERT INTO subscriptions (id, email, name, created_at)
@@ -96,8 +110,8 @@ pub async fn subscribe(form: web::Form<FormData>, db_pool: web::Data<PgPool>) ->
     .await
     {
         Ok(_) => {
-            log::info!(
-                "[REQ_ID {}] Saved subscriber {} - {}",
+            tracing::info!(
+                "[REQID={}] Saved subscriber {} - {}",
                 request_id,
                 form.email,
                 form.name
@@ -105,8 +119,10 @@ pub async fn subscribe(form: web::Form<FormData>, db_pool: web::Data<PgPool>) ->
             HttpResponse::Ok().finish()
         }
         Err(e) => {
-            log::error!("[REQ_ID {}] Failed to save subscriber: {:?}", request_id, e);
+            tracing::error!("[REQID={}] Failed to save subscriber: {:?}", request_id, e);
             HttpResponse::InternalServerError().finish()
         }
     }
+    // `_request_span_guard` is dropped at the nd of `subscribe`.
+    // That's when we "exit" the span.
 }
