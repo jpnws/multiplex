@@ -1,4 +1,6 @@
-use actix_web::{dev::Server, get, middleware, App, HttpResponse, HttpServer};
+use actix_web::{
+    dev::Server, get, middleware::Compress, middleware::Logger, App, HttpResponse, HttpServer,
+};
 use std::net::{Ipv4Addr, SocketAddrV4, TcpListener};
 
 pub mod cfg;
@@ -16,7 +18,8 @@ pub fn spawn_app() -> SocketAddrV4 {
 pub fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
     let server = HttpServer::new(|| {
         App::new()
-            .wrap(middleware::Compress::default())
+            .wrap(Compress::default())
+            .wrap(Logger::default())
             .service(check_health)
             .service(newsletter::subscribe)
             .service(bbs::get_board_by_id)

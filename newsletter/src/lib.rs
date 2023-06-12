@@ -1,4 +1,6 @@
-use actix_web::{dev::Server, middleware, post, web, App, HttpResponse, HttpServer};
+use actix_web::{
+    dev::Server, middleware::Compress, middleware::Logger, post, web, App, HttpResponse, HttpServer,
+};
 use cfg::DatabaseSettings;
 use chrono::Utc;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
@@ -55,7 +57,8 @@ pub async fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::
     let db_pool = web::Data::new(db_pool);
     let server = HttpServer::new(move || {
         App::new()
-            .wrap(middleware::Compress::default())
+            .wrap(Compress::default())
+            .wrap(Logger::default())
             .service(subscribe)
             .app_data(db_pool.clone())
     })
@@ -71,10 +74,14 @@ pub struct FormData {
 }
 
 #[post("/subscriptions")]
-pub async fn subscribe(
-    form: web::Form<FormData>,
-    connection_pool: web::Data<PgPool>,
-) -> HttpResponse {
+pub async fn subscribe(form: web::Form<FormData>, db_pool: web::Data<PgPool>) -> HttpResponse {
+    let request_id = Uuid::new_v4();
+    log::info!(
+        "[REQ{}] Saving new subscriber: {} - {}",
+        request_id,
+        form.email,
+        form.name
+    );
     match sqlx::query!(
         r#"
         INSERT INTO subscriptions (id, email, name, created_at)
@@ -85,12 +92,20 @@ pub async fn subscribe(
         form.name,
         Utc::now(),
     )
-    .execute(connection_pool.get_ref())
+    .execute(db_pool.get_ref())
     .await
     {
-        Ok(_) => HttpResponse::Ok().finish(),
+        Ok(_) => {
+            log::info!(
+                "[REQ{}] Saved subscriber {} - {}",
+                request_id,
+                form.email,
+                form.name
+            );
+            HttpResponse::Ok().finish()
+        }
         Err(e) => {
-            println!("Failed to execute query: {}", e);
+            log::error!("[REQ{}] Failed to save subscriber: {:?}", request_id, e);
             HttpResponse::InternalServerError().finish()
         }
     }
