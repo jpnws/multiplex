@@ -1,6 +1,7 @@
 use actix_web::{dev::Server, middleware, post, web, App, HttpResponse, HttpServer};
+use cfg::DatabaseSettings;
 use chrono::Utc;
-use sqlx::PgPool;
+use sqlx::{Connection, Executor, PgConnection, PgPool};
 use std::net::{Ipv4Addr, SocketAddrV4, TcpListener};
 use uuid::Uuid;
 
@@ -11,15 +12,35 @@ pub struct TestApp {
     pub db_pool: PgPool,
 }
 
+pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
+    // Create database.
+    let mut connection = PgConnection::connect(&config.connection_string_without_db())
+        .await
+        .expect("Failed to create dabase.");
+    connection
+        .execute(&*format!(r#"CREATE DATABASE "{}";"#, &config.database.name))
+        .await
+        .expect("Failed to create database.");
+
+    // Migrate database.
+    let connection_pool = PgPool::connect(&config.connection_string())
+        .await
+        .expect("Failed to connect to Postgres.");
+    sqlx::migrate!("./migrations")
+        .run(&connection_pool)
+        .await
+        .expect("Failed to migrate database.");
+    connection_pool
+}
+
 pub async fn spawn_app() -> TestApp {
     let ip_addr = Ipv4Addr::new(127, 0, 0, 1);
     let socket_addr = SocketAddrV4::new(ip_addr, 0);
     let listener = TcpListener::bind(socket_addr).expect("Failed to bind random port.");
     let port = listener.local_addr().unwrap().port();
-    let cfg = cfg::Settings::new().expect("Failed to get config.");
-    let connection_pool = PgPool::connect(&cfg.connection_string())
-        .await
-        .expect("Failed to connect to Postgres.");
+    let mut cfg = cfg::DatabaseSettings::new().expect("Failed to get config.");
+    cfg.database.name = Uuid::new_v4().to_string();
+    let connection_pool = configure_database(&cfg).await;
     let server = run(listener, connection_pool.clone())
         .await
         .expect("Failed to bind address.");
