@@ -5,6 +5,7 @@ use cfg::DatabaseSettings;
 use chrono::Utc;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use std::net::{Ipv4Addr, SocketAddrV4, TcpListener};
+use tracing::Instrument;
 use uuid::Uuid;
 
 pub mod cfg;
@@ -79,7 +80,7 @@ pub async fn subscribe(form: web::Form<FormData>, db_pool: web::Data<PgPool>) ->
     // Spans, like logs, have an associated level
     // `info_span!` is equivalent to `info!` macro.
     let request_span = tracing::info_span!(
-        "Adding a new subscriber",
+        "Add a new subscriber",
         %request_id,
         subscriber_email = %form.email,
         subscriber_name = %form.name
@@ -89,11 +90,11 @@ pub async fn subscribe(form: web::Form<FormData>, db_pool: web::Data<PgPool>) ->
     // See the following section on `Instrumenting Futures`.
     let _request_span_guard = request_span.enter();
 
-    tracing::info!(
-        "[REQID={}] Saving new subscriber: {} - {}",
-        request_id,
-        form.email,
-        form.name
+    let query_span = tracing::info_span!(
+        "Save new subscriber details to the database",
+        %request_id,
+        subscriber_email = %form.email,
+        subscriber_name = %form.name
     );
 
     match sqlx::query!(
@@ -107,18 +108,12 @@ pub async fn subscribe(form: web::Form<FormData>, db_pool: web::Data<PgPool>) ->
         Utc::now(),
     )
     .execute(db_pool.get_ref())
+    .instrument(query_span)
     .await
     {
-        Ok(_) => {
-            tracing::info!(
-                "[REQID={}] Saved subscriber {} - {}",
-                request_id,
-                form.email,
-                form.name
-            );
-            HttpResponse::Ok().finish()
-        }
+        Ok(_) => HttpResponse::Ok().finish(),
         Err(e) => {
+            // This error log falls outside of `query_span`.
             tracing::error!("[REQID={}] Failed to save subscriber: {:?}", request_id, e);
             HttpResponse::InternalServerError().finish()
         }
