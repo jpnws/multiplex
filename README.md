@@ -7,4 +7,5 @@
 Execute following command for tracing.
 
 `> $env:RUST_LOG = 'trace'`
+
 `> cargo watch -x check -x test -x run`
