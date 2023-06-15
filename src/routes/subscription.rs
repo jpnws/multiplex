@@ -20,7 +20,6 @@ pub async fn subscribe(form: web::Form<FormData>, pool: web::Data<PgPool>) -> Ht
     );
     let _request_span_guard = request_span.enter();
     let query_span = tracing::info_span!("Saving new subscriber details in the database");
-    println!("form: {:#?}", form);
     match sqlx::query!(
         r#"
         INSERT INTO subscriptions (id, email, name, created_at)
@@ -35,12 +34,8 @@ pub async fn subscribe(form: web::Form<FormData>, pool: web::Data<PgPool>) -> Ht
     .instrument(query_span)
     .await
     {
-        Ok(_) => {
-            println!("Subscriber added.");
-            HttpResponse::Ok().finish()
-        }
+        Ok(_) => HttpResponse::Ok().finish(),
         Err(e) => {
-            println!("Failed to execute query: {:?}", e);
             tracing::error!("Failed to execute query: {:?}", e);
             HttpResponse::InternalServerError().finish()
         }
