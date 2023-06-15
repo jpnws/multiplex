@@ -4,8 +4,19 @@
 
 # Reference
 
-Execute following command for tracing.
+Execute following command for tracing:
 
-`> $env:RUST_LOG = 'trace'`
+`> $env:RUST_LOG="trace"`
+
+For Rust backtrace:
+
+`> $env:RUST_BACKTRACE=1`
+
+For `tracing` crate logging with pretty print.
+`cargo install bunyanz` first, and then:
+
+`> cargo watch -x check -x test -x run | bunyan`
+
+For watching, checking, and running tests in realtime:
 
 `> cargo watch -x check -x test -x run`
