@@ -1,6 +1,6 @@
-use multiplexer::configuration::{get_configuration, DatabaseSettings};
-use multiplexer::startup::run;
-use multiplexer::telemetry::{get_subscriber, init_subscriber};
+use multiplex::configuration::{get_configuration, DatabaseSettings};
+use multiplex::startup::run;
+use multiplex::telemetry::{get_subscriber, init_subscriber};
 use once_cell::sync::Lazy;
 use rstest::*;
 use secrecy::ExposeSecret;
