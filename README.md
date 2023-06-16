@@ -20,3 +20,13 @@ For `tracing` crate logging with pretty print.
 For watching, checking, and running tests in realtime:
 
 `> cargo watch -x check -x test -x run`
+
+Install bunyan log prettier.
+
+`> cargo install bunyan`
+
+Running Docker.
+
+`> docker build --tag multiplex --file Dockerfile .`
+
+`> docker run -p 8000:8000 multiplex | bunyan`
