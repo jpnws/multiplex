@@ -98,6 +98,41 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
     assert_eq!(saved.name, "penguin");
 }
 
+#[rstest]
+#[case("name=&email=ursula_le_guin%40gmail.com", "empty name")]
+#[case("name=Ursula&email=", "empty email")]
+#[case("name=Ursula&email=definitely-not-an-email", "invalid email")]
+#[tokio::test]
+async fn subscribe_returns_a_400_when_fields_are_present_but_invalid(
+    #[case] body: String,
+    #[case] error_message: String,
+) {
+    // ====================================
+    // Arrange
+    // ====================================
+    let app = spawn_app().await;
+    let client = reqwest::Client::new();
+    // ====================================
+    // Act
+    // ====================================
+    let response = client
+        .post(&format!("http://{}/subscriptions", &app.address))
+        .header("Content-Type", "application/x-www-form-urlencoded")
+        .body(body)
+        .send()
+        .await
+        .expect("Failed to execute request.");
+    // ====================================
+    // Assert
+    // ====================================
+    assert_eq!(
+        400,
+        response.status().as_u16(),
+        "The API did not return a 400 Bad Request when the payload was {}",
+        error_message
+    );
+}
+
 // Table-driven test. Parametrized test. Using rstest crate.
 #[rstest]
 #[case("name=le%20guin", "missing the email")]
