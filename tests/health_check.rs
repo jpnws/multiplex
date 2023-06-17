@@ -56,7 +56,7 @@ async fn configure_database(config: &DatabaseSettings) -> PgPool {
         .execute(format!(r#"CREATE DATABASE "{}";"#, &config.database_name).as_str())
         .await
         .expect("Failed to create database.");
-    let connection_pool = PgPool::connect_with(config.without_db())
+    let connection_pool = PgPool::connect_with(config.with_db())
         .await
         .expect("Failed to connect to Postgres.");
     sqlx::migrate!("./migrations")
@@ -73,10 +73,10 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
     // ====================================
     let app = spawn_app().await;
     let client = reqwest::Client::new();
+    let body = "name=penguin&email=penguin%40gmail.com";
     // ====================================
     // Act
     // ====================================
-    let body = "name=penguin&email=penguin%40gmail.com";
     let response = client
         .post(&format!("http://{}/subscriptions", &app.address))
         .header("Content-Type", "application/x-www-form-urlencoded")
