@@ -3,7 +3,9 @@ use chrono::Utc;
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::domain::{NewSubscriber, SubscriberName};
+use crate::domain::NewSubscriber;
+use crate::domain::SubscriberEmail;
+use crate::domain::SubscriberName;
 
 #[derive(serde::Deserialize, Debug)]
 pub struct FormData {
@@ -21,8 +23,14 @@ pub struct FormData {
 )]
 pub async fn subscribe(form: web::Form<FormData>, pool: web::Data<PgPool>) -> HttpResponse {
     let new_subscriber = NewSubscriber {
-        email: form.0.email,
-        name: SubscriberName::parse(form.0.name),
+        email: match SubscriberEmail::parse(form.0.email) {
+            Ok(email) => email,
+            Err(_) => return HttpResponse::BadRequest().finish(),
+        },
+        name: match SubscriberName::parse(form.0.name) {
+            Ok(name) => name,
+            Err(_) => return HttpResponse::BadRequest().finish(),
+        },
     };
     match insert_subscriber(&new_subscriber, &pool).await {
         Ok(_) => HttpResponse::Ok().finish(),
@@ -44,7 +52,7 @@ pub async fn insert_subscriber(
             VALUES ($1, $2, $3, $4)
         "#,
         Uuid::new_v4(),
-        new_subscriber.email,
+        new_subscriber.email.as_ref(),
         new_subscriber.name.as_ref(),
         Utc::now(),
     )
