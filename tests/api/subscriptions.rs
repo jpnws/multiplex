@@ -13,7 +13,7 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
     // Act
     // ====================================
     let response = client
-        .post(&format!("http://{}/subscriptions", &app.address))
+        .post(&format!("{}/subscriptions", &app.address))
         .header("Content-Type", "application/x-www-form-urlencoded")
         .body(body)
         .send()
@@ -51,7 +51,7 @@ async fn subscribe_returns_a_400_when_data_is_missing(
     // Act
     // ====================================
     let response = client
-        .post(&format!("http://{}/subscriptions", &app.address))
+        .post(&format!("{}/subscriptions", &app.address))
         .header("Content-Type", "application/x-www-form-urlencoded")
         .body(invalid_body)
         .send()
@@ -87,7 +87,7 @@ async fn subscribe_returns_a_400_when_fields_are_present_but_invalid(
     // Act
     // ====================================
     let response = client
-        .post(&format!("http://{}/subscriptions", &app.address))
+        .post(&format!("{}/subscriptions", &app.address))
         .header("Content-Type", "application/x-www-form-urlencoded")
         .body(body)
         .send()
