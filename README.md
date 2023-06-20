@@ -30,3 +30,10 @@ Running Docker.
 `> docker build --tag multiplex --file Dockerfile .`
 
 `> docker run -p 8000:8000 multiplex | bunyan`
+
+## Do this whenever modifying spec.yaml.
+
+1. Retrieve app ID with command: `> doctl apps list --format ID`
+2. Set the APP_ID env: `> $env:APP_ID="<APP-ID>"`.
+3. Update DigitalOcean's app with the updated spec:
+    - `> doctl apps update $env:APP_ID --spec spec.yaml`
