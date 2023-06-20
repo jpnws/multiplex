@@ -40,7 +40,7 @@ async fn the_link_returned_by_subscribe_returns_a_200_if_called() {
     let response = reqwest::get(confirmation_link).await.unwrap();
 
     // Assert
-    assert_eq!(response.status().as_u16(), 200);
+    assert_eq!(200, response.status().as_u16());
 }
 
 #[tokio::test]
