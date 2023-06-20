@@ -2,7 +2,7 @@ use actix_web::{web, HttpResponse};
 
 #[derive(serde::Deserialize)]
 pub struct Parameters {
-    subscription_token: String,
+    _subscription_token: String,
 }
 
 // Adding the query parameters for `confirm` instruct actix-web to only call
