@@ -1,14 +1,15 @@
 use actix_web::{web, HttpResponse};
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug)]
 pub struct Parameters {
-    _subscription_token: String,
+    subscription_token: String,
 }
 
-// Adding the query parameters for `confirm` instruct actix-web to only call
+// Adding the query parameters for `confirm` instructs actix-web to only call
 // the this handler if the extraction of the parameter value was successful.
 // If the extraction fails, a 400 Bad Request is returned to the caller.
-#[tracing::instrument(name = "Confirm a pending subscriber", skip(_parameters))]
-pub async fn confirm(_parameters: web::Query<Parameters>) -> HttpResponse {
+#[tracing::instrument(name = "Confirm a pending subscriber", skip(parameters))]
+pub async fn confirm(parameters: web::Query<Parameters>) -> HttpResponse {
+    dbg!("{}", &parameters.subscription_token);
     HttpResponse::Ok().finish()
 }
