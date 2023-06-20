@@ -46,12 +46,7 @@ services:
         scope: RUN_TIME
         value: ${newsletter.DATABASE}
 databases:
-  # PG = Postgres
   - engine: PG
-    # Database name
     name: newsletter
-    # Again, let's keep the bill lean
+    production: false
     num_nodes: 1
-    size: db-s-dev-database
-    # Postgres version - using the latest here
-    version: "14"
