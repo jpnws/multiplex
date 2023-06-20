@@ -4,6 +4,10 @@
 
 # Reference
 
+For running tests without capturing debu std prinouts.
+
+`cargo test -- --nocapture`
+
 Execute following command for tracing:
 
 `$env:RUST_LOG="trace"`
