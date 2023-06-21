@@ -76,14 +76,10 @@ impl TestApp {
 }
 
 pub async fn spawn_app() -> TestApp {
-    // The first time `initialize` is invoked, the code in `TRACING` is executed.
-    // All other invocations will instead skip execution.
     Lazy::force(&TRACING);
 
-    // Launch a mock server to stand in for Postmark's API.
     let email_server = MockServer::start().await;
 
-    // Randomize configuration to ensure test isolation.
     let configuration = {
         let mut c = get_configuration().expect("Failed to read configuration.");
         c.database.database_name = Uuid::new_v4().to_string();
@@ -98,8 +94,9 @@ pub async fn spawn_app() -> TestApp {
     let application = Application::build(configuration.clone())
         .await
         .expect("Failed to build application.");
+
     let application_port = application.port();
-    // Get the port before spawning the application.
+
     tokio::spawn(application.run_until_stopped());
 
     TestApp {
