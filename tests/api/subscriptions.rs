@@ -7,7 +7,7 @@ use wiremock::{Mock, ResponseTemplate};
 async fn subscribe_sends_a_confirmation_email_with_a_link() {
     // Arrange
     let app = spawn_app().await;
-    let body = "name=le%20guin&email=ursula_le_guin%40gmail.com";
+    let body = "name=penguin&email=penguin%40gmail.com";
 
     Mock::given(path("/email"))
         .and(method("POST"))
@@ -34,7 +34,7 @@ async fn subscribe_sends_a_confirmation_email_with_a_link() {
 async fn subscribe_sends_a_confirmation_email_for_valid_data() {
     // Arrange
     let app = spawn_app().await;
-    let body = "name=le%20guin&email=ursula_le_guin%40gmail.com";
+    let body = "name=penguin&email=penguin%40gmail.com";
 
     Mock::given(path("/email"))
         .and(method("POST"))
