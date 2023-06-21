@@ -22,9 +22,31 @@
     doctl apps update $env:APP_ID --spec spec.yaml
     ```
 
-### Consequence of not syncing `spec.yaml` with DigitalOcean
+## Do this whenever doing `sqlx` migration.
 
-- You may see an error that looks like:
+- Confirm that `sqlx` CLI installed on your system:
+
+    ```
+    cargo install --version="~0.6" sqlx-cli --no-default-features --features rustls,postgres
+    ```
+
+- Run sqlx prepare to create or update `sqlx-data.json`:
+
+    ```
+    cargo sqlx prepare
+    ```
+
+- Push the change to GitHub to trigger new DigitalOcean deployment.
+
+- Now, migrate the database on DigitalOcean. Retrieve DigitalOcean connection string from your DigitalOcean database's connection details.
+
+    ```
+    sqlx migrate run --database-url "digitalocean-db-connection-string"
+    ```
+
+### Consequence of not syncing `sqlx-data.json` with DigitalOcean
+
+- You may see an error similar to below on DigitalOcean build logs when it tries to build the app:
 
 ```
 2023-06-20T23:48:12.361939011Z [34m│[0m [36mINFO[0m[0403] RUN cargo build --release --bin multiplex
@@ -71,28 +93,6 @@
 2023-06-20T23:48:15.696188071Z [34m│[0m
 2023-06-20T23:48:16.029894861Z [34m│[0m [31m ✘ build failed[0m
 ```
-
-## Do this whenever doing `sqlx` migration.
-
-- Confirm that `sqlx` CLI installed on your system:
-
-    ```
-    cargo install --version="~0.6" sqlx-cli --no-default-features --features rustls,postgres
-    ```
-
-- Run sqlx prepare to create or update `sqlx-data.json`:
-
-    ```
-    cargo sqlx prepare
-    ```
-
-- Push the change to GitHub to trigger new DigitalOcean deployment.
-
-- Now, migrate the database on DigitalOcean. Retrieve DigitalOcean connection string from your DigitalOcean database's connection details.
-
-    ```
-    sqlx migrate run --database-url "digitalocean-db-connection-string"
-    ```
 
 ## Docker notes
 
