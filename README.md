@@ -6,15 +6,21 @@
 
 1. Retrieve app ID with command:
 
-    ```doctl apps list --format ID```
+    ```
+    doctl apps list --format ID
+    ```
 
 2. Set the APP_ID env:
 
-    ```$env:APP_ID="<APP-ID>"```
+    ```
+    $env:APP_ID="<APP-ID>"
+    ```
 
 3. Update DigitalOcean's app with the updated spec:
 
-    ```doctl apps update $env:APP_ID --spec spec.yaml```
+    ```
+    doctl apps update $env:APP_ID --spec spec.yaml
+    ```
 
 ### Consequence of not syncing `spec.yaml` with DigitalOcean
 
@@ -70,27 +76,37 @@
 
 - Confirm that `sqlx` CLI installed on your system:
 
-    ```cargo install --version="~0.6" sqlx-cli --no-default-features --features rustls,postgres```
+    ```
+    cargo install --version="~0.6" sqlx-cli --no-default-features --features rustls,postgres
+    ```
 
 - Run sqlx prepare to create or update `sqlx-data.json`:
 
-    ```cargo sqlx prepare```
+    ```
+    cargo sqlx prepare
+    ```
 
 - Push the change to GitHub to trigger new DigitalOcean deployment.
 
 - Now, migrate the database on DigitalOcean. Retrieve DigitalOcean connection string from your DigitalOcean database's connection details.
 
-    ```sqlx migrate run --database-url "digitalocean-db-connection-string"```
+    ```
+    sqlx migrate run --database-url "digitalocean-db-connection-string"
+    ```
 
 ## Docker notes
 
 - To pull a docker image for postgresql v15.3, execute:
 
-    ```docker pull postgres:15.3```
+    ```
+    docker pull postgres:15.3
+    ```
 
 - To run the postgres docker image with dev config (for newsletter DB).
 
-    ```docker run -d -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password -e POSTGRES_DB=newsletter -p 8090:5432 postgres:15.3```
+    ```
+    docker run -d -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password -e POSTGRES_DB=newsletter -p 8090:5432 postgres:15.3
+    ```
 
     - `-d` flag means to detach the docker run process from the shell and run in the background.
     - `-e` sets up the environment variables for the docker container.
@@ -101,32 +117,51 @@
 
 - For running tests without capturing debug std printouts.
 
-    ```cargo test -- --nocapture```
+    ```
+    cargo test -- --nocapture
+    ```
 
 - Execute following command for tracing:
 
-    ```$env:RUST_LOG="trace"```
+    ```
+    $env:RUST_LOG="trace"
+    ```
 
 - For Rust backtrace:
 
-    ```$env:RUST_BACKTRACE=1```
+    ```
+    $env:RUST_BACKTRACE=1
+    ```
 
 - For `tracing` crate logging with pretty print.
 
-    ```cargo install bunyan``` first, and then:
+    ```
+    cargo install bunyan
+    ```
+    first, and then:
 
-    ```cargo watch -x check -x test -x run | bunyan```
+    ```
+    cargo watch -x check -x test -x run | bunyan
+    ```
 
 - For watching, checking, and running tests in realtime:
 
-    ```cargo watch -x check -x test -x run```
+    ```
+    cargo watch -x check -x test -x run
+    ```
 
 - Install bunyan log prettier.
 
-    ```cargo install bunyan```
+    ```
+    cargo install bunyan
+    ```
 
 - Running Docker.
 
-    ```docker build --tag multiplex --file Dockerfile .```
+    ```
+    docker build --tag multiplex --file Dockerfile .
+    ```
 
-    ```docker run -p 8000:8000 multiplex | bunyan```
+    ```
+    docker run -p 8000:8000 multiplex | bunyan
+    ```
