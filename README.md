@@ -165,3 +165,13 @@
     ```
     docker run -p 8000:8000 multiplex | bunyan
     ```
+
+# Testing endpoints with `curl`
+
+```
+curl http://127.0.0.1:8000/health_check -v
+```
+
+```
+curl -i -X POST -d "email=thomas_mann@hotmail.com&name=Tom" http://127.0.0.1:8000/subscriptions
+```
