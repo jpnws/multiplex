@@ -113,3 +113,23 @@ async fn subscribe_returns_a_400_when_fields_are_present_but_invalid(
         err_msg
     );
 }
+
+#[tracing::instrument()]
+#[tokio::test]
+async fn subscribe_fails_if_there_is_a_fatal_database_error() {
+    // Arrange
+    let app = spawn_app().await;
+    let body = "name=penguin&email=penguin%40gmail.com";
+
+    // Sabotage the database.
+    // sqlx::query!("ALTER TABLE subscription_token DROP COLUMN subscription_token;")
+    //     .execute(&app.db_pool)
+    //     .await
+    //     .unwrap();
+
+    // Act
+    let response = app.post_subscriptions(body.into()).await;
+
+    // Assert
+    assert_eq!(response.status().as_u16(), 500);
+}
