@@ -166,6 +166,16 @@
     docker run -p 8000:8000 multiplex | bunyan
     ```
 
+- `sqlx` logs can be wordy - we can reduce the noise.
+
+    ```
+    $env:RUST_LOG="sqlx=error,info"
+    ```
+
+    ```
+    $env:TEST_LOG="enabled"
+    ```
+
 # Testing endpoints with `curl`
 
 ```
