@@ -173,7 +173,19 @@
     ```
 
     ```
-    $env:TEST_LOG="enabled"
+    $env:TEST_LOG="true"
+    ```
+
+- When running `cargo test`, be sure to set `TEST_LOG` to `true`.
+
+    This is essentially the same as above.
+
+    ```
+    $env:RUST_LOG="sqlx=error,info"
+    ```
+
+    ```
+    $env:TEST_LOG="true"
     ```
 
 # Testing endpoints with `curl`
