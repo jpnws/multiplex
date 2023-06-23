@@ -7,6 +7,7 @@ Modifications to the original code include:
     - Project, trait, variable, parameter, argument, enum, struct, function, method names.
     - Location of function/method parameters and arguments.
     - Location of different pieces of code may be different.
+    - Configuration variables and values.
 
 The original code was licensed under the Apache 2.0 and MIT licenses. This project is licensed under the same terms. See the LICENSE-APACHE and LICENSE-MIT file in this repository for the full license text.
 
