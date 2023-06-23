@@ -1,6 +1,8 @@
-use crate::helpers::{spawn_app, ConfirmationLinks, TestApp};
+use rstest::*;
 use wiremock::matchers::{any, method, path};
 use wiremock::{Mock, ResponseTemplate};
+
+use crate::helpers::{spawn_app, ConfirmationLinks, TestApp};
 
 #[tokio::test]
 async fn newsletters_are_not_delivered_to_unconfirmed_subscribers() {
@@ -73,8 +75,8 @@ async fn create_unconfirmed_subscriber(app: &TestApp) -> ConfirmationLinks {
 }
 
 async fn create_confirmed_subscriber(app: &TestApp) {
-    // We can then reuse the same helper and just add an extra step to
-    // actually call the confirmation link.
+    // We can then reuse the same helper and just add an extra step to actually
+    // call the confirmation link.
     let confirmation_link = create_unconfirmed_subscriber(app).await;
 
     reqwest::get(confirmation_link.html)
@@ -121,4 +123,42 @@ async fn newsletters_are_delivered_to_confirmed_subscribers() {
     assert_eq!(200, response.status().as_u16());
 
     // Mock verifies on Drop that we have sent the newsletter email.
+}
+
+#[rstest]
+#[case((
+    serde_json::json!({
+        "content": {
+            "text": "Newsletter body as plain text",
+            "html": "<p>Newsletter body as HTML</p>",
+        }
+    }),
+    "missing title",
+))]
+#[case((serde_json::json!({"title": "Newsletter!"}), "missing content"))]
+#[tokio::test]
+async fn newsletters_return_400_for_invalid_data(#[case] test_case: (serde_json::Value, &str)) {
+    // Arrange
+
+    let app = spawn_app().await;
+
+    let (invalid_body, error_message) = test_case;
+
+    // Act
+
+    let response = reqwest::Client::new()
+        .post(&format!("{}/newsletters", &app.address))
+        .json(&invalid_body)
+        .send()
+        .await
+        .expect("Failed to execute request.");
+
+    // Assert
+
+    assert_eq!(
+        400,
+        response.status().as_u16(),
+        "The API did not fail with 400 Bad Request when the payload was {}.",
+        error_message
+    );
 }
