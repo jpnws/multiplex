@@ -4,9 +4,9 @@ This project is based on Luca Palmieri's book [Zero to Production in Rust](https
 
 Modifications to the original code include:
 
-    - Project, variable, enum, struct, function, method names.
-    - Differences in the placement of function/method parameters.
-    - Differences in the location of some piece of code across the project.
+    - Project, trait, variable, parameter, argument, enum, struct, function, method names.
+    - Location of function/method parameters and arguments.
+    - Location of different piecies of code may be different.
 
 The original code was licensed under the Apache 2.0 and MIT licenses. This project is licensed under the same terms. See the LICENSE-APACHE and LICENSE-MIT file in this repository for the full license text.
 
