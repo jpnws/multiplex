@@ -5,16 +5,20 @@ use wiremock::{Mock, ResponseTemplate};
 #[tokio::test]
 async fn newsletters_are_not_delivered_to_unconfirmed_subscribers() {
     // Arrange
+
     let app = spawn_app().await;
+
     create_unconfirmed_subscriber(&app).await;
 
     Mock::given(any())
         .respond_with(ResponseTemplate::new(200))
+        // We assert that no request is fired at Postmark.
         .expect(0)
         .mount(&app.email_server)
         .await;
 
     // Act
+
     // A sketch of the newsletter payload structure.
     let newsletter_request_body = serde_json::json!({
         "title": "Newsletter title",
@@ -32,7 +36,10 @@ async fn newsletters_are_not_delivered_to_unconfirmed_subscribers() {
         .expect("Failed to execute request.");
 
     // Assert
+
     assert_eq!(200, response.status().as_u16());
+
+    // Mock verifies on Drop that we have not sent the newsletter email.
 }
 
 /// Use the public API of the app under test to create unconfirmed subscriber.
