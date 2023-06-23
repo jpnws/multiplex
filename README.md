@@ -8,6 +8,9 @@ Modifications to the original code include:
     - Location of function/method parameters and arguments.
     - Location of different pieces of code may be different.
     - Configuration variables and values.
+    - Changes in the wordings for some comments.
+    - Addition of some comments to clarify my own understanding of the Rust language and the structure of the project.
+    - Addition of my own code for further experimentation.
 
 The original code was licensed under the Apache 2.0 and MIT licenses. This project is licensed under the same terms. See the LICENSE-APACHE and LICENSE-MIT file in this repository for the full license text.
 
