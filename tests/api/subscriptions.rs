@@ -12,16 +12,15 @@ async fn subscribe_sends_a_confirmation_email_with_a_link() {
     Mock::given(path("/email"))
         .and(method("POST"))
         .respond_with(ResponseTemplate::new(200))
-        // We are not setting an expectation here anymore.
-        // The test is focused on another aspect of app behavior.
+        // We are not setting an expectation here anymore. The test is focused
+        // on another aspect of app behavior.
         .mount(&app.email_server)
         .await;
 
     // Act
     app.post_subscriptions(body.into()).await;
 
-    // Assert
-    // Get the first intercepted request.
+    // Assert Get the first intercepted request.
     let email_request = &app.email_server.received_requests().await.unwrap()[0];
 
     let confirmation_links = app.get_confirmation_links(email_request);

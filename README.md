@@ -2,23 +2,34 @@
 
 # CI status
 
-[![master](https://github.com/jpnws/multiplex/actions/workflows/master.yml/badge.svg)](https://github.com/jpnws/multiplex/actions/workflows/master.yml) [![audit](https://github.com/jpnws/multiplex/actions/workflows/audit.yml/badge.svg)](https://github.com/jpnws/multiplex/actions/workflows/audit.yml)
+[![master](https://github.com/jpnws/multiplex/actions/workflows/master.yml/badge.svg)](https://github.com/jpnws/multiplex/actions/workflows/master.yml)
+[![audit](https://github.com/jpnws/multiplex/actions/workflows/audit.yml/badge.svg)](https://github.com/jpnws/multiplex/actions/workflows/audit.yml)
 
 # Attribution
 
-This project is based on Luca Palmieri's book [Zero to Production in Rust](https://www.zero2prod.com/). The source code in this repository contains minor modifications, mostly related to naming and overall code aesthetics. The original code, serving as the basis for this project, was sourced from [Zero to Production in Rust](https://www.zero2prod.com/) and corresponds to the code available in [Luca Palmieri's GitHub Repository](https://github.com/LukeMathWalker).
+This project is based on Luca Palmieri's book [Zero to Production in
+Rust](https://www.zero2prod.com/). The source code in this repository contains
+minor modifications, mostly related to naming and overall code aesthetics. The
+original code, serving as the basis for this project, was sourced from [Zero to
+Production in Rust](https://www.zero2prod.com/) and corresponds to the code
+available in [Luca Palmieri's GitHub
+Repository](https://github.com/LukeMathWalker).
 
 Modifications to the original code include:
 
-- Project, trait, variable, parameter, argument, enum, struct, function, method names.
+- Project, trait, variable, parameter, argument, enum, struct, function, method
+  names.
 - Location of function/method parameters and arguments.
 - Location of different pieces of code may be different.
 - Configuration variables and values.
 - Changes in the wordings for some comments.
-- Addition of some comments to clarify my own understanding of the Rust language and the structure of the project.
+- Addition of some comments to clarify my own understanding of the Rust language
+  and the structure of the project.
 - Addition of my own code for further experimentation.
 
-The original code was licensed under the Apache 2.0 and MIT licenses. This project is licensed under the same terms. See the LICENSE-APACHE and LICENSE-MIT file in this repository for the full license text.
+The original code was licensed under the Apache 2.0 and MIT licenses. This
+project is licensed under the same terms. See the LICENSE-APACHE and LICENSE-MIT
+file in this repository for the full license text.
 
 # My notes
 
@@ -63,7 +74,8 @@ The original code was licensed under the Apache 2.0 and MIT licenses. This proje
 
 - Push the change to GitHub to trigger new DigitalOcean deployment.
 
-- Now, migrate the database on DigitalOcean. Retrieve DigitalOcean connection string from your DigitalOcean database's connection details.
+- Now, migrate the database on DigitalOcean. Retrieve DigitalOcean connection
+  string from your DigitalOcean database's connection details.
 
     ```
     sqlx migrate run --database-url "digitalocean-db-connection-string"
@@ -71,7 +83,8 @@ The original code was licensed under the Apache 2.0 and MIT licenses. This proje
 
 ### Consequence of not syncing `sqlx-data.json` with DigitalOcean
 
-- You may see an error similar to below on DigitalOcean build logs when it tries to build the app:
+- You may see an error similar to below on DigitalOcean build logs when it tries
+  to build the app:
 
 ```
 2023-06-20T23:48:12.361939011Z [34m│[0m [36mINFO[0m[0403] RUN cargo build --release --bin multiplex
@@ -133,10 +146,12 @@ The original code was licensed under the Apache 2.0 and MIT licenses. This proje
     docker run -d -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=password -e POSTGRES_DB=newsletter -p 8090:5432 postgres:15.3
     ```
 
-    - `-d` flag means to detach the docker run process from the shell and run in the background.
+    - `-d` flag means to detach the docker run process from the shell and run in
+      the background.
     - `-e` sets up the environment variables for the docker container.
     - `-p` is the port mapping from local->docker.
-    - `postgres` in `postgres:15.3` is the name of the docker image and `15.3` is the image's tag.
+    - `postgres` in `postgres:15.3` is the name of the docker image and `15.3`
+      is the image's tag.
 
 ## Reference
 

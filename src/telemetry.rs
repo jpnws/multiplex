@@ -24,8 +24,8 @@ where
 
 /// Register a subscriber as global default to process span data.
 ///
-/// Must be called only once per process.
-/// Use once_cell crate to ensure a single call per process.
+/// Must be called only once per process. Use once_cell crate to ensure a single
+/// call per process.
 pub fn init_subscriber(subscriber: impl Subscriber + Send + Sync) {
     LogTracer::init().expect("Failed to set logger.");
     set_global_default(subscriber).expect("Failed to set subscriber");

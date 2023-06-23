@@ -59,8 +59,8 @@ impl Application {
         self.port
     }
 
-    // A more expressive name that makes it clear that this function
-    // only returns when the application is stopped.
+    // A more expressive name that makes it clear that this function only
+    // returns when the application is stopped.
     pub async fn run_until_stopped(self) -> Result<(), std::io::Error> {
         self.server.await
     }
@@ -72,9 +72,9 @@ pub fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
         .connect_lazy_with(configuration.with_db())
 }
 
-// Define a wrapper type to retrieve the URL in `subscribe` handler.
-// Retrieval from the context in actix-web is type-based: using a raw `String`
-// would expose us to conflicts.
+// Define a wrapper type to retrieve the URL in `subscribe` handler. Retrieval
+// from the context in actix-web is type-based: using a raw `String` would
+// expose us to conflicts.
 pub struct ApplicationBaseUrl(pub String);
 
 fn run(
