@@ -1,5 +1,11 @@
 # Multiplex
 
+# CI status
+
+[![master](https://github.com/jpnws/multiplex/actions/workflows/master.yml/badge.svg)](https://github.com/jpnws/multiplex/actions/workflows/master.yml) [![audit](https://github.com/jpnws/multiplex/actions/workflows/audit.yml/badge.svg)](https://github.com/jpnws/multiplex/actions/workflows/audit.yml)
+
+# Attribution
+
 This project is based on Luca Palmieri's book [Zero to Production in Rust](https://www.zero2prod.com/). The source code in this repository contains minor modifications, mostly related to naming and overall code aesthetics. The original code, serving as the basis for this project, was sourced from [Zero to Production in Rust](https://www.zero2prod.com/) and corresponds to the code available in [Luca Palmieri's GitHub Repository](https://github.com/LukeMathWalker).
 
 Modifications to the original code include:
@@ -14,7 +20,12 @@ Modifications to the original code include:
 
 The original code was licensed under the Apache 2.0 and MIT licenses. This project is licensed under the same terms. See the LICENSE-APACHE and LICENSE-MIT file in this repository for the full license text.
 
-[![master](https://github.com/jpnws/multiplex/actions/workflows/master.yml/badge.svg)](https://github.com/jpnws/multiplex/actions/workflows/master.yml) [![audit](https://github.com/jpnws/multiplex/actions/workflows/audit.yml/badge.svg)](https://github.com/jpnws/multiplex/actions/workflows/audit.yml)
+# My notes
+
+> Note: Some shell commands in the book, especially the environment setting
+> commands are based on non-Windows OS (presumably MacOS or Linux). Since this
+> project (multiplex) is develop under Windows, some commands  that I am keeping
+> as notes for myself below apply to Windows PowerShell.
 
 ## Do this whenever modifying `spec.yaml`.
 
