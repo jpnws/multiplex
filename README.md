@@ -1,5 +1,15 @@
 # Multiplex
 
+This project is based on Luca Palmieri's book "Zero to Production in Rust". Minor changes in naming and overall cosmetics of the source code have been made. The original code for this project was obtained from [Luca Palmieri's GitHub Repository](https://github.com/LukeMathWalker).
+
+Modifications to the original code include:
+
+    - Project, variable, enum, struct, function, method names.
+    - Differences in the placement of function/method parameters.
+    - Differences in the location of some piece of code across the project.
+
+The original code was licensed under the Apache 2.0 and MIT licenses. This project is licensed under the same terms. See the LICENSE-APACHE and LICENSE-MIT file in this repository for the full license text.
+
 [![master](https://github.com/jpnws/multiplex/actions/workflows/master.yml/badge.svg)](https://github.com/jpnws/multiplex/actions/workflows/master.yml) [![audit](https://github.com/jpnws/multiplex/actions/workflows/audit.yml/badge.svg)](https://github.com/jpnws/multiplex/actions/workflows/audit.yml)
 
 ## Do this whenever modifying `spec.yaml`.
