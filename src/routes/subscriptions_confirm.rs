@@ -8,8 +8,8 @@ pub struct Parameters {
 }
 
 // Adding the query parameters for `confirm` instructs actix-web to only call
-// the this handler if the extraction of the parameter value was successful.
-// If the extraction fails, a 400 Bad Request is returned to the caller.
+// the this handler if the extraction of the parameter value was successful. If
+// the extraction fails, a 400 Bad Request is returned to the caller.
 #[tracing::instrument(name = "Confirm a pending subscriber", skip(parameters, pool))]
 pub async fn confirm(parameters: web::Query<Parameters>, pool: web::Data<PgPool>) -> HttpResponse {
     let id = match get_subscriber_id_from_token(&pool, &parameters.subscription_token).await {
