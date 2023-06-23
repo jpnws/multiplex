@@ -1,6 +1,6 @@
 # Multiplex
 
-This project is based on Luca Palmieri's book "Zero to Production in Rust". The source code in this repository contains minor modifications, mostly related to naming and overall code aesthetics. The original code, serving as the basis for this project, was sourced from "Zero to Production in Rust" and corresponds to the code available in [Luca Palmieri's GitHub Repository](https://github.com/LukeMathWalker).
+This project is based on Luca Palmieri's book [Zero to Production in Rust](https://www.zero2prod.com/). The source code in this repository contains minor modifications, mostly related to naming and overall code aesthetics. The original code, serving as the basis for this project, was sourced from [Zero to Production in Rust](https://www.zero2prod.com/) and corresponds to the code available in [Luca Palmieri's GitHub Repository](https://github.com/LukeMathWalker).
 
 Modifications to the original code include:
 
