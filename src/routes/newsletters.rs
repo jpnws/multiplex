@@ -1,7 +1,12 @@
+use actix_web::http::header::{HeaderMap, HeaderValue};
 use actix_web::http::StatusCode;
+use actix_web::HttpRequest;
 use actix_web::ResponseError;
 use actix_web::{web, HttpResponse};
 use anyhow::Context;
+use base64::Engine;
+use reqwest::header;
+use secrecy::Secret;
 use sqlx::PgPool;
 
 use crate::domain::SubscriberEmail;
