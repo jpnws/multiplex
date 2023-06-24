@@ -44,11 +44,32 @@ impl std::fmt::Debug for PublishError {
 }
 
 impl ResponseError for PublishError {
-    fn status_code(&self) -> StatusCode {
+    fn error_response(&self) -> HttpResponse {
         match self {
-            PublishError::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            PublishError::UnexpectedError(_) => {
+                HttpResponse::new(StatusCode::INTERNAL_SERVER_ERROR)
+            }
+            PublishError::AuthError(_) => {
+                let mut response = HttpResponse::new(StatusCode::UNAUTHORIZED);
+                let header_value = HeaderValue::from_str(r#"Basic realm="publish""#).unwrap();
+                response
+                    .headers_mut()
+                    // actix_web::http::header provides a collection of constants for
+                    // the names of several well-known and standard HTTP headers.
+                    .insert(header::WWW_AUTHENTICATE, header_value);
+                response
+            }
         }
     }
+    // `status_code` is invoked by the default `error_response` implementation.
+    // We are providing a bespoke `error_response` implementation; therefore
+    // there is no need to maintain a `status_code` implementation anymore.
+    // fn status_code(&self) -> StatusCode {
+    //     match self {
+    //         PublishError::AuthError(_) => StatusCode::UNAUTHORIZED,
+    //         PublishError::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+    //     }
+    // }
 }
 
 // We are prefixing `body` with a `_` to avoid a compiler warning about unused
