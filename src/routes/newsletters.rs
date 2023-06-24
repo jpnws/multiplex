@@ -113,6 +113,11 @@ pub async fn publish_newsletter(
     Ok(HttpResponse::Ok().finish())
 }
 
+struct Credentials {
+    username: String,
+    password: Secret<String>,
+}
+
 #[tracing::instrument(name = "Get confirmed subscribers", skip(pool))]
 async fn get_confirmed_subscribers(
     pool: &PgPool,
