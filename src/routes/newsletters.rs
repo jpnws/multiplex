@@ -6,6 +6,7 @@ use actix_web::{web, HttpResponse};
 use anyhow::Context;
 use base64::Engine;
 use reqwest::header;
+use secrecy::ExposeSecret;
 use secrecy::Secret;
 use sqlx::PgPool;
 
@@ -72,17 +73,24 @@ impl ResponseError for PublishError {
     // }
 }
 
-// We are prefixing `body` with a `_` to avoid a compiler warning about unused
-// arguments.
+#[tracing::instrument(
+    name = "Publish a newsletter issue",
+    skip(pool, body, email_client, request)
+    fields(username=tracing::field::Empty, user_id=tracing::field::Empty)
+)]
 pub async fn publish_newsletter(
     pool: web::Data<PgPool>,
     body: web::Json<BodyData>,
     email_client: web::Data<EmailClient>,
     request: HttpRequest,
 ) -> Result<HttpResponse, PublishError> {
-    let _credentials = basic_authentication(request.headers())
-        // Bubble up the error, performing the necessary conversion.
-        .map_err(PublishError::AuthError)?;
+    let credentials = basic_authentication(request.headers()).map_err(PublishError::AuthError)?;
+
+    tracing::Span::current().record("username", &tracing::field::display(&credentials.username));
+
+    let user_id = validate_credentials(credentials, &pool).await?;
+
+    tracing::Span::current().record("user_id", &tracing::field::display(&user_id));
 
     let subscribers = get_confirmed_subscribers(&pool).await?;
 
