@@ -78,7 +78,12 @@ pub async fn publish_newsletter(
     pool: web::Data<PgPool>,
     body: web::Json<BodyData>,
     email_client: web::Data<EmailClient>,
+    request: HttpRequest,
 ) -> Result<HttpResponse, PublishError> {
+    let _credentials = basic_authentication(request.headers())
+        // Bubble up the error, performing the necessary conversion.
+        .map_err(PublishError::AuthError)?;
+
     let subscribers = get_confirmed_subscribers(&pool).await?;
 
     for subscriber in subscribers {
