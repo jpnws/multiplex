@@ -237,3 +237,33 @@ curl http://127.0.0.1:8000/health_check -v
 ```
 curl -i -X POST -d "email=thomas_mann@hotmail.com&name=Tom" http://127.0.0.1:8000/subscriptions
 ```
+
+# Cargo testing
+
+> Note that at this time running test cases directly from vscode's editor by
+> clicking the "Run Test" link on top of the function signature doesn't output
+> the logs that use tracing crate.
+
+To output logs in testing.
+
+```
+$env:TEST_LOG="true"
+```
+
+To de-noise sqlx logs.
+
+```
+$env:RUST_LOG="sqlx=error,info"
+```
+
+To unset an environment variable:
+
+```
+Remove-Item Env:<variable_name>
+```
+
+To run a test for a specific test case and to output only specific lines, with
+bunyan style.
+```
+cargo test --quiet --release [test-case-name] | find "HTTP REQUEST" | bunyan
+```
