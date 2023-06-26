@@ -66,5 +66,5 @@ version = "0.6"
 
 [dependencies.reqwest]
 default-features = false
-features = ["json", "rustls-tls"]
+features = ["cookies", "json", "rustls-tls"]
 version = "0.11"
