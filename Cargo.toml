@@ -22,6 +22,7 @@ tokio = { version = "1", features = ["macros", "rt"] }
 wiremock = "0.5"
 
 [dependencies]
+actix-session = { version = "0.7", features = ["redis-rs-tls-session"] }
 actix-web = "4"
 actix-web-flash-messages = { version = "0.4", features = ["cookies"] }
 anyhow = "1"
