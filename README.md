@@ -35,7 +35,7 @@ file in this repository for the full license text.
 
 > Note: Some shell commands in the book, especially the environment setting
 > commands are based on non-Windows OS (presumably MacOS or Linux). Since this
-> project (multiplex) is developer under Windows 11 (Terminal w/ PowerShell
+> project (multiplex) is developed under Windows 11 (Terminal w/ PowerShell
 > v7.x), some commands that I am keeping as notes for myself below apply to
 > Windows PowerShell.
 
@@ -163,7 +163,7 @@ file in this repository for the full license text.
     $env:CURRENT_TIMESTAMP=$timestamp
     ```
 
-- For running tests without capturing debug std printouts.
+- To let dbg!() output to show up in Terminal:
 
     ```
     cargo test -- --nocapture

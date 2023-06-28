@@ -112,15 +112,16 @@ impl TestApp {
         ConfirmationLinks { html, plain_text }
     }
 
-    pub async fn get_admin_dashboard(&self) -> String {
+    pub async fn get_admin_dashboard(&self) -> reqwest::Response {
         self.api_client
             .get(&format!("{}/admin/dashboard", &self.address))
             .send()
             .await
             .expect("Failed to execute request.")
-            .text()
-            .await
-            .unwrap()
+    }
+
+    pub async fn get_admin_dashboard_html(&self) -> String {
+        self.get_admin_dashboard().await.text().await.unwrap()
     }
 }
 
@@ -198,6 +199,7 @@ impl TestUser {
             user_id: Uuid::new_v4(),
             username: Uuid::new_v4().to_string(),
             password: Uuid::new_v4().to_string(),
+            // password: "everythinghastostartsomewhere".into(),
         }
     }
 
@@ -212,6 +214,8 @@ impl TestUser {
         .hash_password(self.password.as_bytes(), &salt)
         .unwrap()
         .to_string();
+
+        // dbg!(&password_hash);
 
         sqlx::query!(
             r#"
