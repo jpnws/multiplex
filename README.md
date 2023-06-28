@@ -35,8 +35,9 @@ file in this repository for the full license text.
 
 > Note: Some shell commands in the book, especially the environment setting
 > commands are based on non-Windows OS (presumably MacOS or Linux). Since this
-> project (multiplex) is develop under Windows, some commands  that I am keeping
-> as notes for myself below apply to Windows PowerShell.
+> project (multiplex) is developer under Windows 11 (Terminal w/ PowerShell
+> v7.x), some commands that I am keeping as notes for myself below apply to
+> Windows PowerShell.
 
 ## Do this whenever modifying `spec.yaml`.
 
@@ -296,3 +297,23 @@ To terminate currently running Redis docker container.
 $env:RUNNING_CONTAINER=$(docker ps --filter 'name=redis' --format '{{.ID}}')
 docker kill $env:RUNNING_CONTAINER
 ```
+
+# `cargo-deny` advisories
+
+```
+cargo install --locked cargo-deny && cargo deny init
+```
+
+- Write advisories output to a text file.
+
+    > Some unicode characters may look gibberish. A unicode character `┌─` may
+    > look something like `Γö£ΓöÇΓöÇ`. This can be alleviated by enabling "Beta:
+    > Use Unicode UTF-8 for worldwide language support".
+
+    ```
+    cargo deny check advisories *> advisories.txt
+    ```
+
+# What to do when you see an advisory from `cargo deny check advisories`.
+
+- Run `cargo update`. It may update the crates to new versions with fixes.
