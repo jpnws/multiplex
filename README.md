@@ -279,20 +279,20 @@ cargo test --quiet --release [test-case-name] | find "HTTP REQUEST" | bunyan
 
 Store the current timestamp in an environment variable.
 
-    ```
-    $timestamp = (Get-Date -Format yyy-MM-dd_HH-mm-ss.fff)
-    $env:CURRENT_TIMESTAMP=$timestamp
-    ```
+```
+$timestamp = (Get-Date -Format yyy-MM-dd_HH-mm-ss.fff)
+$env:CURRENT_TIMESTAMP=$timestamp
+```
 
 Run the following Docker command.
 
-    ```
-    docker run -p "6379:6379" -d --name "redis_$($env:CURRENT_TIMESTAMP)" redis:7
-    ```
+```
+docker run -p "6379:6379" -d --name "redis_$($env:CURRENT_TIMESTAMP)" redis:7
+```
 
 To terminate currently running Redis docker container.
 
-    ```
-    $env:RUNNING_CONTAINER=$(docker ps --filter 'name=redis' --format '{{.ID}}')
-    docker kill $env:RUNNING_CONTAINER
-    ```
+```
+$env:RUNNING_CONTAINER=$(docker ps --filter 'name=redis' --format '{{.ID}}')
+docker kill $env:RUNNING_CONTAINER
+```
