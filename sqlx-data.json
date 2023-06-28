@@ -104,5 +104,25 @@
       }
     },
     "query": "\n        SELECT\n            user_id,\n            password_hash\n        FROM\n            users\n        WHERE\n            username = $1;\n        "
+  },
+  "e3b21e2cc0790092f0d57a513091d1be8c6fdc887b594b1a581a39fd21ad2a58": {
+    "describe": {
+      "columns": [
+        {
+          "name": "username",
+          "ordinal": 0,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT\n            username\n        FROM\n            users\n        WHERE\n            user_id = $1\n        "
   }
 }
