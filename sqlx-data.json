@@ -16,6 +16,16 @@
     },
     "query": "\n            INSERT INTO\n                    subscriptions (id, email, name, created_at, status)\n            VALUES\n                    ($1, $2, $3, $4, $5)\n        "
   },
+  "09de43429c599ed825c1babf054ea395cf06840177ef522682923965f0f7b991": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "ALTER TABLE subscription_tokens DROP COLUMN subscription_token;"
+  },
   "4260f0d78e8b8e7301b81046176eed67a6cd13701600a084d6d93dc52319e2d4": {
     "describe": {
       "columns": [
@@ -45,6 +55,49 @@
       }
     },
     "query": "\n            UPDATE subscriptions SET status = 'confirmed' WHERE id = $1\n        "
+  },
+  "606e0f92715b967c127a4237af1565912f04378aa3569a1c3acc2c94cff59fb5": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        UPDATE users\n        SET\n            password_hash = $1\n        WHERE\n            user_id = $2\n        "
+  },
+  "9ab6536d2bf619381573b3bf13507d53b2e9cf50051e51c803e916f25b51abd2": {
+    "describe": {
+      "columns": [
+        {
+          "name": "email",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "status",
+          "ordinal": 2,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT email, name, status FROM subscriptions"
   },
   "a6dd9cfed4292c4da78736912af76919603177538461430886b8f7dcf498e37b": {
     "describe": {
@@ -124,5 +177,19 @@
       }
     },
     "query": "\n        SELECT\n            username\n        FROM\n            users\n        WHERE\n            user_id = $1\n        "
+  },
+  "fe76531c27602b236fd61a09d242507ee9492707f79d354f2e4747f8af50ecb4": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n            INSERT INTO users (user_id, username, password_hash) VALUES ($1, $2, $3)\n            "
   }
 }
