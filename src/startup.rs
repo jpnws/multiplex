@@ -15,8 +15,9 @@ use tracing_actix_web::TracingLogger;
 use crate::configuration::DatabaseSettings;
 use crate::configuration::Settings;
 use crate::email_client::EmailClient;
-use crate::routes::admin_dashboard;
 use crate::routes::publish_newsletter;
+use crate::routes::{admin_dashboard, log_out};
+use crate::routes::{change_password, change_password_form};
 use crate::routes::{confirm, login_form};
 use crate::routes::{health_check, subscribe};
 use crate::routes::{home, login};
@@ -121,6 +122,9 @@ async fn run(
             .wrap(TracingLogger::default())
             .route("/", web::get().to(home))
             .route("/admin/dashboard", web::get().to(admin_dashboard))
+            .route("/admin/password", web::get().to(change_password_form))
+            .route("/admin/password", web::post().to(change_password))
+            .route("/admin/logout", web::post().to(log_out))
             .route("/login", web::get().to(login_form))
             .route("/login", web::post().to(login))
             .route("/health_check", web::get().to(health_check))
