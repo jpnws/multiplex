@@ -19,7 +19,6 @@ pub async fn reject_anonymous_users(
         let (http_request, payload) = req.parts_mut();
         TypedSession::from_request(http_request, payload).await
     }?;
-
     match session.get_user_id().map_err(e500)? {
         Some(user_id) => {
             req.extensions_mut().insert(UserId(user_id));
