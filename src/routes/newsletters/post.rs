@@ -3,6 +3,7 @@ use actix_web::http::StatusCode;
 use actix_web::HttpRequest;
 use actix_web::ResponseError;
 use actix_web::{web, HttpResponse};
+use actix_web_flash_messages::FlashMessage;
 use anyhow::Context;
 use base64::Engine;
 use reqwest::header;
@@ -15,6 +16,7 @@ use crate::authentication::Credentials;
 use crate::domain::SubscriberEmail;
 use crate::email_client::EmailClient;
 use crate::routes::error_chain_fmt;
+use crate::utils::see_other;
 
 struct ConfirmedSubscriber {
     email: SubscriberEmail,
@@ -26,10 +28,19 @@ pub struct BodyData {
     content: Content,
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct Content {
     html: String,
     text: String,
+}
+
+impl Content {
+    pub fn new(html: &str, text: &str) -> Content {
+        Content {
+            html: html.to_string(),
+            text: text.to_string(),
+        }
+    }
 }
 
 #[derive(thiserror::Error)]
@@ -88,6 +99,21 @@ pub async fn publish_newsletter(
 
     tracing::Span::current().record("user_id", &tracing::field::display(&user_id));
 
+    if body.title.is_empty() && body.content.html.is_empty() && body.content.text.is_empty() {
+        FlashMessage::error("Newsletter title and its content must not be empty.").send();
+        return Ok(see_other("/admin/newsletters"));
+    }
+
+    if body.title.is_empty() {
+        FlashMessage::error("Newsletter title must not be empty.").send();
+        return Ok(see_other("/admin/newsletters"));
+    }
+
+    if body.content.html.is_empty() && body.content.text.is_empty() {
+        FlashMessage::error("Newsletter content must not be empty.").send();
+        return Ok(see_other("/admin/newsletters"));
+    }
+
     let subscribers = get_confirmed_subscribers(&pool).await?;
 
     for subscriber in subscribers {
@@ -107,13 +133,8 @@ pub async fn publish_newsletter(
             }
             Err(error) => {
                 tracing::warn!(
-                    // We record the error chain as a structured field on the log
-                    // record.
                     error.cause_chain = ?error,
-                    // Using `\` to split a long string literal over two lines,
-                    // without creating a `\n` character.
-                    "Skipping a confirmed subscriber. \
-                    Their stored contact details are invalid",
+                    "Skipping a confirmed subscriber. Their stored contact details are invalid",
                 );
             }
         };

@@ -31,7 +31,7 @@ async fn newsletters_are_not_delivered_to_unconfirmed_subscribers() {
         }
     });
 
-    let response = app.post_newsletters(newsletter_request_body).await;
+    let response = app.post_newsletter(newsletter_request_body).await;
 
     // Assert
 
@@ -107,7 +107,7 @@ async fn newsletters_are_delivered_to_confirmed_subscribers() {
         }
     });
 
-    let response = app.post_newsletters(newsletter_request_body).await;
+    let response = app.post_newsletter(newsletter_request_body).await;
 
     // Assert
 
@@ -137,7 +137,7 @@ async fn newsletters_return_400_for_invalid_data(#[case] test_case: (serde_json:
 
     // Act
 
-    let response = app.post_newsletters(invalid_body).await;
+    let response = app.post_newsletter(invalid_body).await;
 
     // Assert
 

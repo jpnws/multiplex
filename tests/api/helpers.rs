@@ -1,13 +1,14 @@
 use argon2::password_hash::SaltString;
 use argon2::{Algorithm, Argon2, Params, PasswordHasher, Version};
-use multiplex::configuration::{get_configuration, DatabaseSettings};
-use multiplex::startup::get_connection_pool;
-use multiplex::startup::Application;
-use multiplex::telemetry::{get_subscriber, init_subscriber};
 use once_cell::sync::Lazy;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use uuid::Uuid;
 use wiremock::MockServer;
+
+use multiplex::configuration::{get_configuration, DatabaseSettings};
+use multiplex::startup::get_connection_pool;
+use multiplex::startup::Application;
+use multiplex::telemetry::{get_subscriber, init_subscriber};
 
 // Ensure that the `tracing` stack is only initialized once using `once_cell`.
 static TRACING: Lazy<()> = Lazy::new(|| {
@@ -47,18 +48,6 @@ impl TestApp {
             .post(&format!("{}/subscriptions", &self.address))
             .header("Content-Type", "application/x-www-form-urlencoded")
             .body(body)
-            .send()
-            .await
-            .expect("Failed to execute request.")
-    }
-
-    pub async fn post_newsletters(&self, body: serde_json::Value) -> reqwest::Response {
-        self.api_client
-            .post(&format!("{}/newsletters", &self.address))
-            // Random credentials.
-            // `reqwest` does all the encoding and formatting heavy-lifting.
-            .basic_auth(&self.test_user.username, Some(&self.test_user.password))
-            .json(&body)
             .send()
             .await
             .expect("Failed to execute request.")
@@ -132,12 +121,8 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn get_publish_newsletter(&self) -> reqwest::Response {
-        self.api_client
-            .get(&format!("{}/admin/newsletters", &self.address))
-            .send()
-            .await
-            .expect("Failed to execute request.")
+    pub async fn get_change_password_html(&self) -> String {
+        self.get_change_password().await.text().await.unwrap()
     }
 
     pub async fn post_change_password<Body>(&self, body: &Body) -> reqwest::Response
@@ -152,10 +137,6 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn get_change_password_html(&self) -> String {
-        self.get_change_password().await.text().await.unwrap()
-    }
-
     pub async fn post_logout(&self) -> reqwest::Response {
         self.api_client
             .post(&format!("{}/admin/logout", &self.address))
@@ -164,13 +145,25 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn post_a_newsletter<Body>(&self, body: &Body) -> reqwest::Response
-    where
-        Body: serde::Serialize,
-    {
+    pub async fn get_publish_newsletter(&self) -> reqwest::Response {
         self.api_client
-            .post(&format!("{}/admin/newsletters", &self.address))
-            .form(body)
+            .get(&format!("{}/admin/newsletters", &self.address))
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+
+    pub async fn get_publish_newsletter_html(&self) -> String {
+        self.get_publish_newsletter().await.text().await.unwrap()
+    }
+
+    pub async fn post_newsletter(&self, body: serde_json::Value) -> reqwest::Response {
+        self.api_client
+            .post(&format!("{}/newsletters", &self.address))
+            // Random credentials.
+            // `reqwest` does all the encoding and formatting heavy-lifting.
+            .basic_auth(&self.test_user.username, Some(&self.test_user.password))
+            .json(&body)
             .send()
             .await
             .expect("Failed to execute request.")

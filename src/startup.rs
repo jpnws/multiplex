@@ -1,10 +1,5 @@
-use crate::authentication::reject_anonymous_users;
-use crate::configuration::{DatabaseSettings, Settings};
-use crate::email_client::EmailClient;
-use crate::routes::{
-    admin_dashboard, change_password, change_password_form, confirm, health_check, home, log_out,
-    login, login_form, publish_newsletter, subscribe,
-};
+use std::net::TcpListener;
+
 use actix_session::storage::RedisSessionStore;
 use actix_session::SessionMiddleware;
 use actix_web::cookie::Key;
@@ -17,8 +12,15 @@ use actix_web_lab::middleware::from_fn;
 use secrecy::{ExposeSecret, Secret};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
-use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
+
+use crate::authentication::reject_anonymous_users;
+use crate::configuration::{DatabaseSettings, Settings};
+use crate::email_client::EmailClient;
+use crate::routes::{
+    admin_dashboard, change_password, change_password_form, confirm, health_check, home, log_out,
+    login, login_form, publish_newsletter, publish_newsletter_form, subscribe,
+};
 
 pub struct Application {
     port: u16,
@@ -30,7 +32,6 @@ impl Application {
         let connection_pool = get_connection_pool(&configuration.database)
             .await
             .expect("Failed to connect to Postgres.");
-
         let sender_email = configuration
             .email_client
             .sender()
@@ -106,7 +107,7 @@ async fn run(
                 web::scope("/admin")
                     .wrap(from_fn(reject_anonymous_users))
                     .route("/dashboard", web::get().to(admin_dashboard))
-                    // .route("/newsletters", web::get().to(publish_newsletter_form))
+                    .route("/newsletters", web::get().to(publish_newsletter_form))
                     .route("/newsletters", web::post().to(publish_newsletter))
                     .route("/password", web::get().to(change_password_form))
                     .route("/password", web::post().to(change_password))
