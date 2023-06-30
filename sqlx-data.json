@@ -16,34 +16,6 @@
     },
     "query": "\n            INSERT INTO\n                    subscriptions (id, email, name, created_at, status)\n            VALUES\n                    ($1, $2, $3, $4, $5)\n        "
   },
-  "09de43429c599ed825c1babf054ea395cf06840177ef522682923965f0f7b991": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "ALTER TABLE subscription_tokens DROP COLUMN subscription_token;"
-  },
-  "4260f0d78e8b8e7301b81046176eed67a6cd13701600a084d6d93dc52319e2d4": {
-    "describe": {
-      "columns": [
-        {
-          "name": "email",
-          "ordinal": 0,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "\n            SELECT\n                email\n            FROM\n                subscriptions\n            WHERE\n                status = 'confirmed'\n        "
-  },
   "5e975283de3ef273f138ae1d7d9eaf97d1b3f074c07d483a7b7ea40cbac96549": {
     "describe": {
       "columns": [],
@@ -69,35 +41,23 @@
     },
     "query": "\n        UPDATE users\n        SET\n            password_hash = $1\n        WHERE\n            user_id = $2\n        "
   },
-  "9ab6536d2bf619381573b3bf13507d53b2e9cf50051e51c803e916f25b51abd2": {
+  "7b57e2776a245ba1602f638121550485e2219a6ccaaa62b5ec3e4683e33a3b5f": {
     "describe": {
       "columns": [
         {
           "name": "email",
           "ordinal": 0,
           "type_info": "Text"
-        },
-        {
-          "name": "name",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "status",
-          "ordinal": 2,
-          "type_info": "Text"
         }
       ],
       "nullable": [
-        false,
-        false,
         false
       ],
       "parameters": {
         "Left": []
       }
     },
-    "query": "SELECT email, name, status FROM subscriptions"
+    "query": "\n        SELECT email\n        FROM subscriptions\n        WHERE status = 'confirmed'\n        "
   },
   "a6dd9cfed4292c4da78736912af76919603177538461430886b8f7dcf498e37b": {
     "describe": {
@@ -177,19 +137,5 @@
       }
     },
     "query": "\n        SELECT\n            username\n        FROM\n            users\n        WHERE\n            user_id = $1\n        "
-  },
-  "fe76531c27602b236fd61a09d242507ee9492707f79d354f2e4747f8af50ecb4": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Uuid",
-          "Text",
-          "Text"
-        ]
-      }
-    },
-    "query": "\n            INSERT INTO users (user_id, username, password_hash) VALUES ($1, $2, $3)\n            "
   }
 }
