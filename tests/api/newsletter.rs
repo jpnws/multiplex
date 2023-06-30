@@ -1,3 +1,4 @@
+use multiplex::routes::{BodyData, Content};
 use rstest::*;
 use uuid::Uuid;
 use wiremock::matchers::{any, method, path};
@@ -20,18 +21,15 @@ async fn newsletters_are_not_delivered_to_unconfirmed_subscribers() {
         .mount(&app.email_server)
         .await;
 
-    // Act
+    let newsletter_request_body = BodyData {
+        title: String::from("Newsletter title"),
+        content: Content::new(
+            "<p>Newsletter body as HTML</p>",
+            "Newsletter body as plain text",
+        ),
+    };
 
-    // A sketch of the newsletter payload structure.
-    let newsletter_request_body = serde_json::json!({
-        "title": "Newsletter title",
-        "content": {
-            "text": "Newsletter body as plain text",
-            "html": "<p>Newsletter body as HTML</p>",
-        }
-    });
-
-    let response = app.post_newsletter(newsletter_request_body).await;
+    let response = app.post_newsletter(&newsletter_request_body).await;
 
     // Assert
 
@@ -97,17 +95,15 @@ async fn newsletters_are_delivered_to_confirmed_subscribers() {
         .mount(&app.email_server)
         .await;
 
-    // Act
+    let newsletter_request_body = BodyData {
+        title: String::from("Newsletter title"),
+        content: Content::new(
+            "<p>Newsletter body as HTML</p>",
+            "Newsletter body as plain text",
+        ),
+    };
 
-    let newsletter_request_body = serde_json::json!({
-        "title": "Newsletter title",
-        "content": {
-            "text": "Newsletter body as plain text",
-            "html": "<p>Newsletter body as HTML</p>",
-        }
-    });
-
-    let response = app.post_newsletter(newsletter_request_body).await;
+    let response = app.post_newsletter(&newsletter_request_body).await;
 
     // Assert
 
@@ -118,29 +114,24 @@ async fn newsletters_are_delivered_to_confirmed_subscribers() {
 
 #[rstest]
 #[case((
-    serde_json::json!({
-        "content": {
-            "text": "Newsletter body as plain text",
-            "html": "<p>Newsletter body as HTML</p>",
-        }
-    }),
-    "missing title",
+    BodyData {
+        title: String::from(""),
+        content: Content::new("<p>Newsletter body as HTML</p>", "Newsletter body as plain text"),
+    },
+    "Newsletter content must not be empty."
 ))]
-#[case((serde_json::json!({"title": "Newsletter!"}), "missing content"))]
+#[case((
+    BodyData {
+        title: String::from(""),
+        content: Content::new("", ""),
+    },
+    "Newsletter content must not be empty."
+))]
 #[tokio::test]
-async fn newsletters_return_400_for_invalid_data(#[case] test_case: (serde_json::Value, &str)) {
-    // Arrange
-
+async fn newsletters_return_400_for_invalid_data(#[case] test_case: (BodyData, &str)) {
     let app = spawn_app().await;
-
     let (invalid_body, error_message) = test_case;
-
-    // Act
-
-    let response = app.post_newsletter(invalid_body).await;
-
-    // Assert
-
+    let response = app.post_newsletter(&invalid_body).await;
     assert_eq!(
         400,
         response.status().as_u16(),

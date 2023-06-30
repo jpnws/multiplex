@@ -157,13 +157,13 @@ impl TestApp {
         self.get_publish_newsletter().await.text().await.unwrap()
     }
 
-    pub async fn post_newsletter(&self, body: serde_json::Value) -> reqwest::Response {
+    pub async fn post_newsletter<BodyData>(&self, body: &BodyData) -> reqwest::Response
+    where
+        BodyData: serde::Serialize,
+    {
         self.api_client
             .post(&format!("{}/newsletters", &self.address))
-            // Random credentials.
-            // `reqwest` does all the encoding and formatting heavy-lifting.
-            .basic_auth(&self.test_user.username, Some(&self.test_user.password))
-            .json(&body)
+            .form(body)
             .send()
             .await
             .expect("Failed to execute request.")
