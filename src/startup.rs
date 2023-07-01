@@ -29,20 +29,8 @@ pub struct Application {
 
 impl Application {
     pub async fn build(configuration: Settings) -> Result<Self, anyhow::Error> {
-        let connection_pool = get_connection_pool(&configuration.database)
-            .await
-            .expect("Failed to connect to Postgres.");
-        let sender_email = configuration
-            .email_client
-            .sender()
-            .expect("Invalid sender email address.");
-        let timeout = configuration.email_client.timeout();
-        let email_client = EmailClient::new(
-            configuration.email_client.base_url,
-            sender_email,
-            configuration.email_client.authorization_token,
-            timeout,
-        );
+        let connection_pool = get_connection_pool(&configuration.database);
+        let email_client = configuration.email_client.client();
         let address = format!(
             "{}:{}",
             configuration.application.host, configuration.application.port
@@ -68,13 +56,6 @@ impl Application {
     pub async fn run_until_stopped(self) -> Result<(), std::io::Error> {
         self.server.await
     }
-}
-
-pub async fn get_connection_pool(configuration: &DatabaseSettings) -> Result<PgPool, sqlx::Error> {
-    PgPoolOptions::new()
-        .acquire_timeout(std::time::Duration::from_secs(2))
-        .connect_with(configuration.with_db())
-        .await
 }
 
 pub struct ApplicationBaseUrl(pub String);
@@ -130,3 +111,9 @@ async fn run(
 
 #[derive(Clone)]
 pub struct HmacSecret(pub Secret<String>);
+
+pub fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
+    PgPoolOptions::new()
+        .acquire_timeout(std::time::Duration::from_secs(2))
+        .connect_lazy_with(configuration.with_db())
+}
