@@ -8,3 +8,4 @@
 # Web Application Reliability
 
 - A `Typed` interface to `Session` (pg.491)
+- Idempotency of requests.
