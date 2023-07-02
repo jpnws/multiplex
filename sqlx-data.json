@@ -92,6 +92,19 @@
     },
     "query": "\n        UPDATE idempotency\n        SET \n            response_status_code = $3, \n            response_headers = $4,\n            response_body = $5\n        WHERE\n            user_id = $1 AND\n            idempotency_key = $2\n        "
   },
+  "2880480077b654e38b63f423ab40680697a500ffe1af1d1b39108910594b581b": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        UPDATE users\n        SET password_hash = $1\n        WHERE user_id = $2\n        "
+  },
   "38d1a12165ad4f50d8fbd4fc92376d9cc243dcc344c67b37f7fef13c6589e1eb": {
     "describe": {
       "columns": [
@@ -135,19 +148,6 @@
       }
     },
     "query": "\n            UPDATE subscriptions SET status = 'confirmed' WHERE id = $1\n        "
-  },
-  "606e0f92715b967c127a4237af1565912f04378aa3569a1c3acc2c94cff59fb5": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Text",
-          "Uuid"
-        ]
-      }
-    },
-    "query": "\n        UPDATE users\n        SET\n            password_hash = $1\n        WHERE\n            user_id = $2\n        "
   },
   "794c0ce1ab5e766961132366163df7a7183ae7985228bf585700250deb38b726": {
     "describe": {
@@ -265,20 +265,7 @@
     },
     "query": "\n            SELECT\n                subscriber_id\n            FROM\n                subscription_tokens\n            WHERE\n                subscription_token = $1\n        "
   },
-  "b98537df3ace4cf320171c9add0ac366f23191ffd0d38f002ed9776a62ee1480": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Text",
-          "Uuid"
-        ]
-      }
-    },
-    "query": "\n            INSERT INTO\n                subscription_tokens (subscription_token, subscriber_id)\n            VALUES\n                ($1, $2)\n        "
-  },
-  "ce931823b0c71944c4cceac4d2525371d0078578c18bf988d45cd6167a5da3ed": {
+  "acf1b96c82ddf18db02e71a0e297c822b46f10add52c54649cf599b883165e58": {
     "describe": {
       "columns": [
         {
@@ -302,7 +289,20 @@
         ]
       }
     },
-    "query": "\n        SELECT\n            user_id,\n            password_hash\n        FROM\n            users\n        WHERE\n            username = $1;\n        "
+    "query": "\n        SELECT user_id, password_hash\n        FROM users\n        WHERE username = $1\n        "
+  },
+  "b98537df3ace4cf320171c9add0ac366f23191ffd0d38f002ed9776a62ee1480": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n            INSERT INTO\n                subscription_tokens (subscription_token, subscriber_id)\n            VALUES\n                ($1, $2)\n        "
   },
   "e3b21e2cc0790092f0d57a513091d1be8c6fdc887b594b1a581a39fd21ad2a58": {
     "describe": {
