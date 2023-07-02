@@ -27,5 +27,4 @@ RUN apt-get update -y \
 COPY --from=builder /app/target/release/multiplex multiplex
 COPY configuration configuration
 ENV APP_ENVIRONMENT production
-ENV RUST_BACKTRACE=full
 ENTRYPOINT ["./multiplex"]
