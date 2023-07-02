@@ -16,21 +16,37 @@ pub async fn publish_newsletter_form(
             r#"
             <!DOCTYPE html>
             <html lang="en">
-
             <head>
                 <meta http-equiv="content-type" content="text/html; charset=utf-8">
-                <title>Change Password</title>
+                <title>Publish Newsletter Issue</title>
             </head>
-
             <body>
                 {msg_html}
                 <form action="/admin/newsletters" method="post">
-                    <label>Title
-                        <input type="text" placeholder="Newsletter title" name="newsletter_title">
+                    <label>Title:<br>
+                        <input
+                            type="text"
+                            placeholder="Enter the issue title"
+                            name="title"
+                        >
                     </label>
                     <br>
-                    <label>Content
-                        <input type="text" placeholder="Newsletter content" name="newsletter_content">
+                    <label>Plain text content:<br>
+                        <textarea
+                            placeholder="Enter the content in plain text"
+                            name="text_content"
+                            rows="20"
+                            cols="50"
+                        ></textarea>
+                    </label>
+                    <br>
+                    <label>HTML content:<br>
+                        <textarea
+                            placeholder="Enter the content in HTML format"
+                            name="html_content"
+                            rows="20"
+                            cols="50"
+                        ></textarea>
                     </label>
                     <br>
                     <input hidden type="text" name="idempotency_key" value="{idempotency_key}">
@@ -38,8 +54,7 @@ pub async fn publish_newsletter_form(
                 </form>
                 <p><a href="/admin/dashboard">&lt;- Back</a></p>
             </body>
-
             </html>
-            "#
+            "#,
         )))
 }
