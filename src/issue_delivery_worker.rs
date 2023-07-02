@@ -121,9 +121,9 @@ async fn delete_task(
     sqlx::query!(
         r#"
         DELETE FROM issue_delivery_queue
-        WHERE
+        WHERE 
             newsletter_issue_id = $1 AND
-            subscriber_email = $2
+            subscriber_email = $2 
         "#,
         issue_id,
         email

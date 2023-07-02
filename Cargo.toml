@@ -1,9 +1,10 @@
 [package]
-authors = ["Ji Park <ji@jipark.dev>"]
+authors = ["LukeMathWalker <rust@lpalmieri.com>"]
 edition = "2021"
 name = "multiplex"
 version = "0.1.0"
 
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
 path = "src/lib.rs"
 
@@ -11,60 +12,54 @@ path = "src/lib.rs"
 name = "multiplex"
 path = "src/main.rs"
 
-[dev-dependencies]
-fake = "~2.3"
-linkify = "0.9"
-quickcheck = "0.9.2"
-quickcheck_macros = "0.9.1"
-rstest = "0.17.0"
-serde_json = "1"
-serde_urlencoded = "0.7.1"
-tokio = { version = "1", features = ["macros", "rt"] }
-wiremock = "0.5"
-
 [dependencies]
 actix-session = { version = "0.7", features = ["redis-rs-tls-session"] }
 actix-web = "4"
 actix-web-flash-messages = { version = "0.4", features = ["cookies"] }
-actix-web-lab = "0.19"
-anyhow = "1"
+actix-web-lab = "0.18"
+anyhow = "1.0.40"
 argon2 = { version = "0.4", features = ["std"] }
-base64 = "0.21"
+base64 = "0.21.0"
 chrono = { version = "0.4.22", default-features = false, features = ["clock"] }
-claims = "0.7"
-config = "0.13"
-dotenvy = "0.15"
-once_cell = "1"
+config = { version = "0.13", default-features = false, features = ["yaml"] }
+log = "0.4"
 rand = { version = "0.8", features = ["std_rng"] }
+reqwest = { version = "0.11", default-features = false, features = [
+    "cookies",
+    "json",
+    "rustls-tls",
+] }
 secrecy = { version = "0.8", features = ["serde"] }
-serde = { version = "1.0", features = ["derive"] }
+serde = "1.0.115"
 serde-aux = "4"
 serde_json = "1"
-thiserror = "1"
-tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
-tracing = { version = "0.1", features = ["log"] }
-tracing-actix-web = "0.7"
-tracing-bunyan-formatter = "0.3"
-tracing-log = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter", "registry"] }
-unicode-segmentation = "1"
-uuid = { version = "1", features = ["serde", "v4"] }
-validator = "0.16"
-
-[dependencies.sqlx]
-default-features = false
-features = [
+sqlx = { version = "0.6", default-features = false, features = [
     "chrono",
     "macros",
     "migrate",
     "offline",
     "postgres",
-    "runtime-tokio-rustls",
+    "runtime-actix-rustls",
     "uuid",
-]
-version = "0.6"
+] }
+thiserror = "1.0.24"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+tracing = "0.1.19"
+tracing-actix-web = "0.7"
+tracing-bunyan-formatter = "0.3"
+tracing-log = "0.1.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "registry"] }
+unicode-segmentation = "1.7.1"
+uuid = { version = "1", features = ["serde", "v4"] }
+validator = "0.16"
 
-[dependencies.reqwest]
-default-features = false
-features = ["cookies", "json", "rustls-tls"]
-version = "0.11"
+[dev-dependencies]
+claims = "0.7.0"
+fake = "~2.3.0"
+linkify = "0.9"
+once_cell = "1.7.2"
+quickcheck = "0.9.2"
+quickcheck_macros = "0.9.1"
+serde_json = "1.0.61"
+serde_urlencoded = "0.7.1"
+wiremock = "0.5"

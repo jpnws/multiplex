@@ -3,10 +3,24 @@ use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
 
 #[tokio::test]
+async fn confirmations_without_token_are_rejected_with_a_400() {
+    // Arrange
+    let app = spawn_app().await;
+
+    // Act
+    let response = reqwest::get(&format!("{}/subscriptions/confirm", app.address))
+        .await
+        .unwrap();
+
+    // Assert
+    assert_eq!(response.status().as_u16(), 400);
+}
+
+#[tokio::test]
 async fn the_link_returned_by_subscribe_returns_a_200_if_called() {
     // Arrange
     let app = spawn_app().await;
-    let body = "name=penguin&email=penguin%40gmail.com";
+    let body = "name=le%20guin&email=ursula_le_guin%40gmail.com";
 
     Mock::given(path("/email"))
         .and(method("POST"))
@@ -22,28 +36,14 @@ async fn the_link_returned_by_subscribe_returns_a_200_if_called() {
     let response = reqwest::get(confirmation_links.html).await.unwrap();
 
     // Assert
-    assert_eq!(200, response.status().as_u16());
-}
-
-#[tokio::test]
-async fn confirmations_without_token_are_rejected_with_a_400() {
-    // Arrange
-    let app = spawn_app().await;
-
-    // Act
-    let response = reqwest::get(&format!("{}/subscriptions/confirm", app.address))
-        .await
-        .unwrap();
-
-    // Assert
-    assert_eq!(400, response.status().as_u16());
+    assert_eq!(response.status().as_u16(), 200);
 }
 
 #[tokio::test]
 async fn clicking_on_the_confirmation_link_confirms_a_subscriber() {
     // Arrange
     let app = spawn_app().await;
-    let body = "name=penguin&email=penguin%40gmail.com";
+    let body = "name=le%20guin&email=ursula_le_guin%40gmail.com";
 
     Mock::given(path("/email"))
         .and(method("POST"))
@@ -63,12 +63,12 @@ async fn clicking_on_the_confirmation_link_confirms_a_subscriber() {
         .unwrap();
 
     // Assert
-    let saved = sqlx::query!("SELECT email, name, status FROM subscriptions")
+    let saved = sqlx::query!("SELECT email, name, status FROM subscriptions",)
         .fetch_one(&app.db_pool)
         .await
         .expect("Failed to fetch saved subscription.");
 
-    assert_eq!("penguin@gmail.com", saved.email);
-    assert_eq!("penguin", saved.name);
-    assert_eq!("confirmed", saved.status);
+    assert_eq!(saved.email, "ursula_le_guin@gmail.com");
+    assert_eq!(saved.name, "le guin");
+    assert_eq!(saved.status, "confirmed");
 }
