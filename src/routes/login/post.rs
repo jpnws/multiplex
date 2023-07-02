@@ -1,3 +1,7 @@
+use crate::authentication::AuthError;
+use crate::authentication::{validate_credentials, Credentials};
+use crate::routes::error_chain_fmt;
+use crate::session_state::TypedSession;
 use actix_web::error::InternalError;
 use actix_web::http::header::LOCATION;
 use actix_web::web;
@@ -5,11 +9,6 @@ use actix_web::HttpResponse;
 use actix_web_flash_messages::FlashMessage;
 use secrecy::Secret;
 use sqlx::PgPool;
-
-use crate::authentication::AuthError;
-use crate::authentication::{validate_credentials, Credentials};
-use crate::routes::error_chain_fmt;
-use crate::session_state::TypedSession;
 
 #[derive(serde::Deserialize)]
 pub struct FormData {
@@ -21,6 +20,7 @@ pub struct FormData {
     skip(form, pool, session),
     fields(username=tracing::field::Empty, user_id=tracing::field::Empty)
 )]
+// We are now injecting `PgPool` to retrieve stored credentials from the database
 pub async fn login(
     form: web::Form<FormData>,
     pool: web::Data<PgPool>,
@@ -30,9 +30,7 @@ pub async fn login(
         username: form.0.username,
         password: form.0.password,
     };
-
     tracing::Span::current().record("username", &tracing::field::display(&credentials.username));
-
     match validate_credentials(credentials, &pool).await {
         Ok(user_id) => {
             tracing::Span::current().record("user_id", &tracing::field::display(&user_id));
@@ -49,13 +47,11 @@ pub async fn login(
                 AuthError::InvalidCredentials(_) => LoginError::AuthError(e.into()),
                 AuthError::UnexpectedError(_) => LoginError::UnexpectedError(e.into()),
             };
-            FlashMessage::error(e.to_string()).send();
             Err(login_redirect(e))
         }
     }
 }
 
-// Redirect to the login page with an error message.
 fn login_redirect(e: LoginError) -> InternalError<LoginError> {
     FlashMessage::error(e.to_string()).send();
     let response = HttpResponse::SeeOther()
